@@ -1,3 +1,4 @@
 *.swp
 *~
 example/Vagrantfile
+example/.vagrant
