@@ -1,41 +1,18 @@
 {
     "config": {
         "vm": {
-            "box": "ubuntu"
+            "box": "ubuntu/trusty64"
         },
-        "networks": [
-            {
-                "type": "private_network",
-                "detail": {
-                    "ip": "192.168.33.10"
-                }
-            },
-            {
-                "type": "forwarded_port",
-                "detail": {
-                    "guest": 80,
-                    "host": 8080
-                }
-            },
-            {
-                "type": "public_network",
-                "detail": {}
-            }
-        ],
         "network": {
-            "forwarded_port": {
-                "guest": 80,
-                "host": 8080
-            },
-            "private_network": {
-                "ip": "192.168.33.10"
-            },
-            "public_network": {}
+            "type": "public_network",
+            "detail": {
+                "guest": 83,
+                "host": 85
+            }
         },
         "providers": {
             "virtualbox": {
-                "gui": true,
-                "memory": 1024
+                "memory": 384
             }
         },
         "provisoners": {

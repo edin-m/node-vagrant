@@ -11,20 +11,18 @@ Vagrant.configure(2) do |config|
   # https://docs.vagrantup.com.
 
   
-  config.vm.box = "ubuntu"
+  config.vm.box = "ubuntu/trusty64"
   
 
-  config.vm.network "private_network", ip: "192.168.33.10"
-  config.vm.network "forwarded_port", guest: 80, host: 8080
-  config.vm.network "public_network"
   
+  config.vm.network "public_network", guest: 83, host: 85
+  
+
 
   
   config.vm.provider "virtualbox" do |vb|
     
-    vb.gui = true
-    
-    vb.memory = 1024
+    vb.memory = 384
     
   end
   

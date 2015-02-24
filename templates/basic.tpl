@@ -14,9 +14,10 @@ Vagrant.configure(2) do |config|
   config.vm.<%=key%> = "<%=value%>"
   <% }); %>
 
-  <% _.forEach(config.networks, function(network) { 
-      %>config.vm.network "<%= network.type %>"<% _.forEach(network.detail, function(value, key) { %>, <%= key %>: <% if(typeof value === 'string') { %>"<%=value%>"<% } else { %><%=value%><% } %><% }); %>
-  <% }); %>
+  <% if(typeof config.network !== 'undefined') { %>
+  config.vm.network "<%= config.network.type %>"<% _.forEach(config.network.detail, function(value, key) { %>, <%= key %>: <% if(typeof value === 'string') { %>"<%=value%>"<% } else { %><%=value%><% } %><% }); %>
+  <% } %>
+
 
   <% if(typeof config.providers.virtualbox !== 'undefined') { %>
   config.vm.provider "virtualbox" do |vb|

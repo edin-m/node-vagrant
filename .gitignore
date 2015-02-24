@@ -4,3 +4,4 @@ example/Vagrantfile
 example/.vagrant
 node_modules
 test/Vagrantfile
+test/.vagrant

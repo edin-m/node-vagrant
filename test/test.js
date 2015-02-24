@@ -21,8 +21,8 @@ describe('it should test node-vagrant', function() {
             var origLoc = path.join(__dirname, 'Vagrantfile');
             var exampleLoc = path.join(__dirname, 'example1.Vagrantfile');
 
-            var Vagrantfile = fs.readFileSync(origLoc).toString();
-            var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
+            var Vagrantfile = fs.readFileSync(origLoc).toString().replace(/[\n\r]/gm, '');
+            var exampleVagrantfile = fs.readFileSync(exampleLoc).toString().replace(/[\n\r]/gm, '');
 
             expect(Vagrantfile).to.equal(exampleVagrantfile);
             done();
@@ -31,7 +31,7 @@ describe('it should test node-vagrant', function() {
     });
 
     after(function(done) {
-        this.timeout(10000);
+        this.timeout(5000);
         machine.destroy(function(err, res) {
             expect(err).to.not.exist;
 

@@ -198,11 +198,8 @@ Vagrant.prototype._changeVagrantfile = function(config, cb) {
 };
 
 Vagrant.prototype.init = function(args, config, cb) {
-    console.log(typeof args, typeof config, typeof cb);
     cb = cb || config;
     config = typeof config === 'object' ? config : {};
-    console.log(typeof args, typeof config, typeof cb);
-
 
     var command = _command('init', args, ['-f']);
 
