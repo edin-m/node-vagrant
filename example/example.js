@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var fs = require('fs');
 var vagrant = require('../index');
 
 process.env.NODE_DEBUG = true;
@@ -41,6 +42,8 @@ function onInit(err, out) {
                                 vagrant.globalStatus(function(err, out) {
                                     console.log(err, out);
                                 });
+
+                                fs.unlinkSync('./Vagrantfile')
                             });
                         });
                     });

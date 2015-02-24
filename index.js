@@ -3,6 +3,9 @@ var spawn = child_process.spawn;
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var path = require('path');
+var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
@@ -21,6 +24,8 @@ function Vagrant(opts) {
     }
 
     this.opts = opts;
+    this.opts.cwd = this.opts.cwd || process.cwd();
+    this.opts.env = this.opts.env || process.env;
 }
 
 function _command(name, args, more) {
@@ -107,8 +112,8 @@ Vagrant.prototype._run = function(command, cb) {
     var out = '';
     var err = '';
     var child = run(command, {
-        cwd: self.opts.cwd || process.cwd(),
-        env: self.opts.env || process.env,
+        cwd: self.opts.cwd,
+        env: self.opts.env,
     }, function(err, data) {
         self._runningCommand = false;
 
@@ -171,11 +176,48 @@ Vagrant.prototype.up = function(args, cb) {
     this._run(command, cb);
 };
 
-Vagrant.prototype.init = function(args, cb) {
-    cb = cb || args;
+Vagrant.prototype._changeVagrantfile = function(config, cb) {
+    var self = this;
+
+    var where = path.join(__dirname, 'templates/basic.tpl');
+    var locVagrantfile = path.join(self.opts.cwd, 'Vagrantfile');
+    fs.readFile(where, function(err, data) {
+        if(err) return cb(err);
+
+        data = data.toString();
+
+        var compiled = _.template(data);
+        var rendered = compiled(config);
+
+        fs.writeFile(locVagrantfile, rendered, function(err) {
+            if(err) return cb(err);
+
+            cb(null);
+        });
+    });
+};
+
+Vagrant.prototype.init = function(args, config, cb) {
+    console.log(typeof args, typeof config, typeof cb);
+    cb = cb || config;
+    config = typeof config === 'object' ? config : {};
+    console.log(typeof args, typeof config, typeof cb);
+
 
     var command = _command('init', args, ['-f']);
-    this._run(command, cb);
+
+    var self = this;
+    if(!_.isEmpty(config)) {
+        this._run(command, function(err, res) {
+            self._changeVagrantfile(config, function(err) {
+                if(err) return cb(err);
+
+                cb(null, res);
+            });
+        });
+    } else {
+        this._run(command, cb);
+    }
 };
 
 Vagrant.prototype.destroy = function(args, cb) {
@@ -199,6 +241,13 @@ Vagrant.prototype.halt = function(args, cb) {
     var command = _command('halt', args, ['-f']);
     this._run(command, cb);
 };
+
+Vagrant.prototype.reload = function(args, cb) {
+    cb = cb || args;
+
+    var command = _command('reload', args);
+    this._run(command, cb);
+}
 
 Vagrant.prototype._generic = function(name, args, cb) {
     this._run(_command(name, args), cb);
