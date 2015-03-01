@@ -9,24 +9,31 @@ var path = require('path');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
-var MATCHERS = {
+var SSH_CONFIG_MATCHERS = {
     port: /Port (\S+)$/mi,
     hostname: /HostName (\S+)$/mi,
     user: /User (\S+)$/mi,
-    private_key: /IdentityFile (\S+)$/mi
+    private_key: /IdentityFile (\S+)$/mi,
 };
 
-function Vagrant(opts) {
+var MATCHERS = {
+    progress: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i,
+    Downloading: 'Downloading'
+};
+
+function Machine(opts) {
     opts = opts || {};
 
-    if(!(this instanceof Vagrant)) {
-        return new Vagrant(opts);
+    if(!(this instanceof Machine)) {
+        return new Machine(opts);
     }
 
     this.opts = opts;
     this.opts.cwd = this.opts.cwd || process.cwd();
     this.opts.env = this.opts.env || process.env;
 }
+
+util.inherits(Machine, EventEmitter);
 
 function _command(name, args, more) {
     more = more || [];
@@ -74,6 +81,7 @@ function run(command, opts, cb) {
     if(process.env.NODE_DEBUG)
         console.log('node-vagrant command:', command);
 
+    opts.detached = false;
     var child = spawn(vagrant, command, opts);
 
     if(typeof cb === 'function') {
@@ -100,7 +108,7 @@ function run(command, opts, cb) {
 }
 
 
-Vagrant.prototype._run = function(command, cb) {
+Machine.prototype._run = function(command, cb) {
     
     var self = this;
     if(self._runningCommand) {
@@ -117,28 +125,29 @@ Vagrant.prototype._run = function(command, cb) {
     }, function(err, data) {
         self._runningCommand = false;
 
-        cb(err, data);
+        if(typeof cb === 'function')
+            cb(err, data);
     });
 
     return child;
 };
 
-Vagrant.prototype.sshConfig = function(cb) {
+Machine.prototype.sshConfig = function(cb) {
     var command = _command('ssh-config');
 
     this._run(command, function(err, out) {
         if(err) return cb(err);
         
         var config = {};
-        for(var key in MATCHERS) {
-            config[key] = out.match(MATCHERS[key])[1];
+        for(var key in SSH_CONFIG_MATCHERS) {
+            config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
         }
 
         cb(null, config);
     });
 };
 
-Vagrant.prototype.status = function(cb) {
+Machine.prototype.status = function(cb) {
     var command = _command('status');
 
     this._run(command, function(err, out) {
@@ -169,14 +178,30 @@ Vagrant.prototype.status = function(cb) {
     });
 };
 
-Vagrant.prototype.up = function(args, cb) {
+Machine.prototype.up = function(args, cb) {
     cb = cb || args;
 
     var command = _command('up', args);
-    this._run(command, cb);
+    var proc = this._run(command, cb);
+
+    var self = this;
+    proc.stdout.on('data', function(buff) {
+        var data = buff.toString();
+
+        var res = data.match(MATCHERS.progress);
+
+        if(res) {
+            var machine = res[1];
+            var progress = res[2];
+            var rate = res[3];
+            var remaining = res[4];
+
+            self.emit('progress', machine, progress, rate, remaining);
+        }
+    });
 };
 
-Vagrant.prototype._changeVagrantfile = function(config, cb) {
+Machine.prototype._changeVagrantfile = function(config, cb) {
     var self = this;
 
     var where = path.join(__dirname, 'templates/basic.tpl');
@@ -197,7 +222,7 @@ Vagrant.prototype._changeVagrantfile = function(config, cb) {
     });
 };
 
-Vagrant.prototype.init = function(args, config, cb) {
+Machine.prototype.init = function(args, config, cb) {
     cb = cb || config;
     config = typeof config === 'object' ? config : {};
 
@@ -217,40 +242,42 @@ Vagrant.prototype.init = function(args, config, cb) {
     }
 };
 
-Vagrant.prototype.destroy = function(args, cb) {
+Machine.prototype.destroy = function(args, cb) {
     cb = cb || args;
 
     var command = _command('destroy', args, ['-f']);
     this._run(command, cb);
 };
 
-Vagrant.prototype.suspend = function(cb) {
+Machine.prototype.suspend = function(cb) {
     this._run(_command('suspend'), cb);
 };
 
-Vagrant.prototype.resume = function(cb) {
+Machine.prototype.resume = function(cb) {
     this._run(_command('resume'), cb);
 };
 
-Vagrant.prototype.halt = function(args, cb) {
+Machine.prototype.halt = function(args, cb) {
     cb = cb || args;
 
     var command = _command('halt', args, ['-f']);
     this._run(command, cb);
 };
 
-Vagrant.prototype.reload = function(args, cb) {
+Machine.prototype.reload = function(args, cb) {
     cb = cb || args;
 
     var command = _command('reload', args);
     this._run(command, cb);
 }
 
-Vagrant.prototype._generic = function(name, args, cb) {
+Machine.prototype._generic = function(name, args, cb) {
     this._run(_command(name, args), cb);
 };
 
-module.exports.Vagrant = Vagrant;
+
+
+module.exports.Machine = Machine;
 
 module.exports.globalStatus = function(args, cb) {
      cb = cb || args;
@@ -288,7 +315,7 @@ module.exports.globalStatus = function(args, cb) {
 };
 
 module.exports.create = function(opts) {
-    return Vagrant(opts);
+    return Machine(opts);
 };
 
 module.exports.version = function(cb) {

@@ -18,6 +18,10 @@ var machine = vagrant.create({ cwd: process.cwd(), env: process.env });
 function onInit(err, out) {
     if(err) throw new Error(err);
     
+    machine.on('progress', function() {
+        console.log('download progress: ', [].slice.call(arguments));
+    });
+
     machine.up(function(err, out) {
         if(err) throw new Error(err);
         
