@@ -275,8 +275,6 @@ Machine.prototype._generic = function(name, args, cb) {
     this._run(_command(name, args), cb);
 };
 
-
-
 module.exports.Machine = Machine;
 
 module.exports.globalStatus = function(args, cb) {

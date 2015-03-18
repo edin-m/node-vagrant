@@ -80,7 +80,6 @@ npm run example
 
 TODO
 ===
-- reload
 - multi-machine
 - more detail vagrant file settings
     - firewall
