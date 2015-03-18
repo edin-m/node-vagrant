@@ -1,6 +1,6 @@
 {
   "name": "node-vagrant",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Node js wrapper for vagrant CLI - command line tool.",
   "main": "index.js",
   "keywords": [
@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "example": "cd example && node example.js",
-    "test": "mocha test"
+    "test": "node ./node_modules/mocha/bin/mocha test"
   },
   "author": {
-      "name": "Edin Mujagic"
+    "name": "Edin Mujagic"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "lodash": "^3.3.0"
   },
   "devDependencies": {
-    "chai": "^2.1.0"
+    "chai": "^2.1.0",
+    "mocha": "^2.2.1"
   }
 }

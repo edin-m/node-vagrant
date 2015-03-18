@@ -283,7 +283,7 @@ module.exports.globalStatus = function(args, cb) {
      var command = _command('global-status', args);
      run(command, function(err, out) {
          if(err) return cb(err);
- 
+
          var lines = out.split('\n').slice(2).reduce(function(prev, curr) {
              if(prev.length > 0 && prev[prev.length - 1].length === 0)
                  return prev;
