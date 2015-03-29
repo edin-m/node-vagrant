@@ -17,7 +17,7 @@ describe('it should test node-vagrant', function() {
         var config = require('./example1.config.json');
         machine.init('ubuntu/trusty64', config, function(err, out) {
             expect(err).to.not.exist;
-            
+
             var origLoc = path.join(__dirname, 'Vagrantfile');
             var exampleLoc = path.join(__dirname, 'example1.Vagrantfile');
 
