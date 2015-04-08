@@ -1,6 +1,6 @@
 {
   "name": "node-vagrant",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Node js wrapper for vagrant CLI - command line tool.",
   "main": "index.js",
   "keywords": [
@@ -18,9 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/edinmu/node-vagrant.git"
+    "url": "https://github.com/edin-m/node-vagrant.git"
   },
-  "homepage": "https://github.com/edinmu/node-vagrant",
+  "bugs": {
+      "url": "https://github.com/edin-m/node-vagrant/issues"
+  },
+  "homepage": "https://github.com/edin-m/node-vagrant",
   "license": "ISC",
   "dependencies": {
     "lodash": "^3.3.0"
