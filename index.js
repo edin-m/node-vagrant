@@ -137,13 +137,17 @@ Machine.prototype.sshConfig = function(cb) {
 
     this._run(command, function(err, out) {
         if(err) return cb(err);
+        var configs = out.split('\n\n')
+            .filter(function(out) {return !_.isEmpty(out)})
+            .map(function(out) {
+                var config = {};
+                for(var key in SSH_CONFIG_MATCHERS) {
+                    config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
+                }
+                return config;
+            })
 
-        var config = {};
-        for(var key in SSH_CONFIG_MATCHERS) {
-            config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
-        }
-
-        cb(null, config);
+        cb(null, configs);
     });
 };
 
