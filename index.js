@@ -10,6 +10,7 @@ var path = require('path');
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
 var SSH_CONFIG_MATCHERS = {
+    host: /Host (\S+)$/mi,
     port: /Port (\S+)$/mi,
     hostname: /HostName (\S+)$/mi,
     user: /User (\S+)$/mi,
