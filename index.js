@@ -10,6 +10,7 @@ var path = require('path');
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
 var SSH_CONFIG_MATCHERS = {
+    host: /Host (\S+)$/mi,
     port: /Port (\S+)$/mi,
     hostname: /HostName (\S+)$/mi,
     user: /User (\S+)$/mi,
@@ -28,6 +29,8 @@ function Machine(opts) {
         return new Machine(opts);
     }
 
+    this.batch = [];
+    
     this.opts = opts;
     this.opts.cwd = this.opts.cwd || process.cwd();
     this.opts.env = this.opts.env || process.env;
@@ -112,7 +115,8 @@ Machine.prototype._run = function(command, cb) {
 
     var self = this;
     if(self._runningCommand) {
-        return cb(new Error('Already running command'));
+        self.batch.push({command, cb});
+        return;
     }
 
     self._runningCommand = true;
@@ -124,6 +128,8 @@ Machine.prototype._run = function(command, cb) {
         env: self.opts.env,
     }, function(err, data) {
         self._runningCommand = false;
+        const next = self.batch.pop();
+        if (next) self._run(next.command, next.cb);
 
         if(typeof cb === 'function')
             cb(err, data);
