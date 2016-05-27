@@ -18,13 +18,25 @@ Vagrant.configure(2) do |config|
   config.vm.network "<%= config.network.type %>"<% _.forEach(config.network.detail, function(value, key) { %>, <%= key %>: <% if(typeof value === 'string') { %>"<%=value%>"<% } else { %><%=value%><% } %><% }); %>
   <% } %>
 
+  <% if(typeof config.providers !== 'undefined') { %>
+  <% _.forEach(config.providers, function( settings,provider) { %>
+  config.vm.provider "<%= provider %>" do |<%= provider %>|
+    <% _.forEach(settings, function(value, name) { %>
+    <%= provider %>.<%= name %> = <%= value %>
+  <% }); %>
+  end
+  <% }); %>
+  <% }; %>
 
-  <% if(typeof config.providers.virtualbox !== 'undefined') { %>
-  config.vm.provider "virtualbox" do |vb|
-    <% _.forEach(config.providers.virtualbox, function(value, name) { %>
-    vb.<%= name %> = <%= value %>
+
+  <% if(typeof config.provisioners !== 'undefined') { %>
+  <% _.forEach(config.provisioners, function( settings,provisioner) { %>
+  config.vm.provision "<%= provisioner %>" do |<%= provisioner %>|
+    <% _.forEach(settings, function(value, name) { %>
+    <%= provisioner %>.<%= name %> = <%= value %>
     <% }); %>
   end
+  <% }); %>
   <% }; %>
 
 end
