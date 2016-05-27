@@ -263,6 +263,34 @@ Machine.prototype.reload = function(args, cb) {
     this._run(command, cb);
 }
 
+Machine.prototype.snapshots = function () {
+    var self = this;
+    return {
+        push: function (cb) {
+            self._generic("snapshot", "push", cb)
+        },
+        pop: function (args, cb) {
+            self._generic("snapshot", "pop", cb)
+
+        },
+        save: function (args, cb) {
+            self._generic("snapshot save", args, cb)
+
+        },
+        restore: function (args, cb) {
+            self._generic("snapshot restore", args, cb)
+
+        },
+        list: function (cb) {
+            self._generic("snapshot", "list", cb)
+
+        },
+        delete: function (args, cb) {
+            self._generic("snapshot delete", args, cb)
+        }
+    }
+}
+
 Machine.prototype._generic = function(name, args, cb) {
     this._run(_command(name, args), cb);
 };

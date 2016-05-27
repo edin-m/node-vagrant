@@ -18,13 +18,23 @@ Vagrant.configure(2) do |config|
   config.vm.network "public_network", guest: 83, host: 85
   
 
-
   
-  config.vm.provider "virtualbox" do |vb|
+  
+  config.vm.provider "virtualbox" do |virtualbox|
     
-    vb.memory = 384
-    
+    virtualbox.memory = 384
+  
   end
+  
+  config.vm.provider "lxc" do |lxc|
+    
+    lxc.container_name = 'test'
+  
+  end
+  
+  
+
+
   
 
 end
