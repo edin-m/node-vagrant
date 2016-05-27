@@ -13,6 +13,9 @@
         "providers": {
             "virtualbox": {
                 "memory": 384
+            },
+            "lxc": {
+                "container_name": "'test'"
             }
         },
         "provisoners": {

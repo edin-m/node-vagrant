@@ -13,7 +13,7 @@ describe('it should test node-vagrant', function() {
     });
 
     it('should test creation of vagrant file with config', function(done) {
-
+        this.timeout(20000);
         var config = require('./example1.config.json');
         machine.init('ubuntu/trusty64', config, function(err, out) {
             expect(err).to.not.exist;
@@ -31,7 +31,7 @@ describe('it should test node-vagrant', function() {
     });
 
     after(function(done) {
-        this.timeout(5000);
+        this.timeout(20000);
         machine.destroy(function(err, res) {
             expect(err).to.not.exist;
 
