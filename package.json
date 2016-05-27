@@ -1,6 +1,6 @@
 {
   "name": "node-vagrant",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Node js wrapper for vagrant CLI - command line tool.",
   "main": "index.js",
   "keywords": [
@@ -14,7 +14,9 @@
     "name": "Edin Mujagic"
   },
   "contributors": [
-      { "name": "Maximilian Klein", "url": "https://github.com/LittleHelicase" }
+      { "name": "Maximilian Klein", "url": "https://github.com/LittleHelicase" },
+      { "name": "Jacob Payne", "url": "https://github.com/Latrasis" },
+      { "name": "Friedemann Stoffregen", "url": "https://github.com/Donderda" }
   ],
   "repository": {
     "type": "git",

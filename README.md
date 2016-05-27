@@ -67,6 +67,20 @@ machine.halt(function(err, out) ...
 // destroy - uses -f by default
 machine.destroy(function(err, out) ...
 
+// snapshots
+push, pop, save, delete, restore, list and a snapshot() function.
+
+Example usage: 
+machine.snapshots().push(cb);
+
+```
+
+Events
+===
+```
+.on('up-progress', function(out) ... // receive stdout progress from up of vagrant
+
+.on('progress', function(out) ... // receive stdout box download progress
 ```
 
 Example
@@ -85,4 +99,5 @@ TODO
     - firewall
     - networking
 - boxing
-- provisoning
+- ~~provisoning~~
+- ~~providers~~

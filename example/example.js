@@ -22,6 +22,10 @@ function onInit(err, out) {
         console.log('download progress: ', [].slice.call(arguments));
     });
 
+    machine.on('up-progress', function() {
+        console.log('up progress: ', [].slice.call(arguments));
+    });
+
     machine.up(function(err, out) {
         if(err) throw new Error(err);
         

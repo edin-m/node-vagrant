@@ -182,6 +182,8 @@ Machine.prototype.up = function(args, cb) {
 
         var res = data.match(MATCHERS.progress);
 
+        self.emit('up-progress', data);
+
         if(res) {
             var machine = res[1];
             var progress = res[2];
