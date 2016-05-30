@@ -36,5 +36,33 @@ Vagrant.configure(2) do |config|
 
 
   
+  
+  config.vm.provision "shell" do |shell|
+    
+    shell.path = './provision.shell.sh'
+    
+  end
+  
+  config.vm.provision "ansible" do |ansible|
+    
+    ansible.playbook = 'playbook.yml'
+    
+  end
+  
+  config.vm.provision "docker" do |docker|
+    
+    docker.pull_images = 'ubuntu'
+    
+  end
+  
+  config.vm.provision "file" do |file|
+    
+    file.source = './Vagrantfile'
+    
+    file.destination = '~/OutputVagrantfile'
+    
+  end
+  
+  
 
 end

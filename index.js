@@ -263,7 +263,11 @@ Machine.prototype.reload = function(args, cb) {
 
     var command = _command('reload', args);
     this._run(command, cb);
-}
+};
+
+Machine.prototype.provision = function(cb) {
+    this._run(_command('provision'), cb);
+};
 
 Machine.prototype.snapshots = function () {
     var self = this;

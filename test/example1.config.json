@@ -18,13 +18,19 @@
                 "container_name": "'test'"
             }
         },
-        "provisoners": {
+        "provisioners": {
             "shell": {
-                "type": "inline",
-                "commands": [
-                    "sudo apt-get update",
-                    "sudo apt-get install -y apache2"
-                ]
+                "path": "'./provision.shell.sh'"
+            },
+            "ansible": {
+                "playbook": "'playbook.yml'"
+            },
+            "docker": {
+                "pull_images": "'ubuntu'"
+            },
+            "file": {
+                "source": "'./Vagrantfile'",
+                "destination": "'~/OutputVagrantfile'"
             }
         }
     }
