@@ -275,7 +275,7 @@ Machine.prototype.snapshots = function () {
         push: function (cb) {
             self._generic("snapshot", "push", cb)
         },
-        pop: function (args, cb) {
+        pop: function (cb) {
             self._generic("snapshot", "pop", cb)
 
         },
