@@ -234,6 +234,7 @@ Machine.prototype._prepareProvisioners = function(config) {
         }, []);
     }
     config.provisioners.forEach(function (provisioner) {
+        provisioner.alias = provisioner.alias || provisioner.name;
         provisioner.template = provisionerAdapters.createTemplate(provisioner);
     });
 };

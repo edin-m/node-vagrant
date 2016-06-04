@@ -20,22 +20,30 @@
         },
         "provisioners": [
             {
-            	"shell": {
-                	"path": "'./provision.shell.sh'"
-            	}
+                "type": "shell",
+                "name": "shell1",
+                "config": {
+                    "path": "'./provision.shell.sh'"
+                }
             },
             {
-	            "ansible": {
+                "type": "ansible",
+                "name": "ansible1",
+	            "config": {
 	                "playbook": "'playbook.yml'"
 	            }
             },
             {
-	            "docker": {
+                "type": "docker",
+                "name": "docker1",
+	            "config": {
 	                "pull_images": "'ubuntu'"
 	            }
 	        },
 	        {
-	            "file": {
+                "type": "file",
+                "name": "file1",
+	            "config": {
 	                "source": "'./Vagrantfile'",
 	                "destination": "'~/OutputVagrantfile'"
 	            }
