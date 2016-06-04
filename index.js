@@ -205,12 +205,9 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
         if(err) return cb(err);
 
         data = data.toString();
-        console.log(data, JSON.stringify(config, null, 4));
 
         var compiled = _.template(data);
         var rendered = compiled(config);
-        console.log(rendered);
-        process.exit(0);
 
         fs.writeFile(locVagrantfile, rendered, function(err) {
             if(err) return cb(err);
@@ -229,7 +226,8 @@ Machine.prototype._prepareProvisioners = function(config) {
         var provisioners = config.provisioners;
         config.provisioners = Object.keys(provisioners).reduce(function(prev, name) {
             return prev.concat([{
-                alias: name.substr(0, 2),
+                name: name,
+                alias: name,
                 type: name,
                 config: provisioners[name]
             }]);
@@ -262,7 +260,6 @@ Machine.prototype.init = function(args, config, cb) {
             self._changeVagrantfile(config, function(err) {
                 if(err) return cb(err);
 
-                process.exit(0);
                 cb(null, res);
             });
         });

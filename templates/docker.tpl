@@ -1,3 +1,3 @@
 <% _.forEach(settings, function(value, name) { %>
-    <%= name %> <%= value %>
+    <%= provisionerAlias %>.<%= name %> <%= value %>
 <% }); %>

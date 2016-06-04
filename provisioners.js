@@ -5,16 +5,16 @@ var path = require('path');
 function DockerAdapter() {
     var tplFile = fs.readFileSync(path.join(__dirname, 'templates/docker.tpl')).toString();
     var compiled = _.template(tplFile);
-    this.createTemplate = function (config) {
-        return compiled({ settings: config });
-        //console.log('docker adapter');
-        //console.log(config);
-        //return 'no docker adapter template';
+    this.createTemplate = function (provisionerConfig) {
+        return compiled({
+            provisionerAlias: provisionerConfig.alias,
+            settings: provisionerConfig.config
+        });
     };
 }
 
 function GenericAdapter() {
-    this.createTemplate = function (config) {
+    this.createTemplate = function (provisionerConfig) {
         return '';
     };
 }
@@ -36,7 +36,7 @@ var provisionAdapters = {
 };
 
 module.exports.createTemplate = function (provisionerConfig) {
-    return provisionAdapters.get(provisionerConfig.type).createTemplate(provisionerConfig.config);
+    return provisionAdapters.get(provisionerConfig.type).createTemplate(provisionerConfig);
 };
 
 module.exports.get = function (type) {

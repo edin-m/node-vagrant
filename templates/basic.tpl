@@ -35,7 +35,7 @@ Vagrant.configure(2) do |config|
     <%= provisioner.template %>
   <% } else { %>
     <% _.forEach(provisioner.config, function(value, name) { %>
-      <%= name %> = <%= value %>
+      <%= provisioner.alias %>.<%= name %> = <%= value %>
     <% }); %>
   <% } %>
   end
