@@ -30,8 +30,14 @@ var vagrant = require('node-vagrant');
 vagrant.version(function(err, out) ...
 
 // view global status
+//you can specify '--prune' as additional argument. By default global-status is based on a cache, 
+//prune removes invalid entries from the list. 
+//Note that this is much more time consuming than simply listing the entries.
 vagrant.globalStatus(function(err, out) ...
+vagrant.globalStatus('--prune', function(err, out) ...
 // out is [] array of {} objects with properties: id, name, provider, state, cwd
+
+
 
 // create machine - does not run command or init machine
 // you can specify directory where Vagrantfile will be located
