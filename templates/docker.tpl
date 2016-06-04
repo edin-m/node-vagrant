@@ -1,3 +1,9 @@
 <% _.forEach(settings, function(value, name) { %>
-    <%= provisionerAlias %>.<%= name %> <%= value %>
+    <% if (_.isArray(value)) { %>
+        <% if (value.length > 0) { %>
+            <%= provisionerAlias %>.<%= name %>: ['<%= value.join("', '") %>']
+        <% } %>
+    <% } else { %>
+        <%= provisionerAlias %>.<%= name %> <%= value %>
+    <% } %>
 <% }); %>

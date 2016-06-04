@@ -7,7 +7,7 @@ function DockerAdapter() {
     var compiled = _.template(tplFile);
     this.createTemplate = function (provisionerConfig) {
         return compiled({
-            provisionerAlias: provisionerConfig.alias,
+            provisionerAlias: provisionerConfig.alias || provisionerConfig.name,
             settings: provisionerConfig.config
         });
     };
@@ -19,7 +19,7 @@ function GenericAdapter() {
     };
 }
 
-var provisionAdapters = {
+var ProvisionAdapters = {
     provisionerAdapter: {},
     get: function(type) {
         if (!this.provisionerAdapter[type]) {
@@ -36,21 +36,21 @@ var provisionAdapters = {
 };
 
 module.exports.createTemplate = function (provisionerConfig) {
-    return provisionAdapters.get(provisionerConfig.type).createTemplate(provisionerConfig);
+    return ProvisionAdapters.get(provisionerConfig.type).createTemplate(provisionerConfig);
 };
 
 module.exports.get = function (type) {
-    return provisionAdapters.get(type);
+    return ProvisionAdapters.get(type);
 };
 
 module.exports.addAdapter = function (type, adapter, force) {
     force = force || false;
     if (force) {
-        provisionAdapters.provisionerAdapter[type] = adapter;
+        ProvisionAdapters.provisionerAdapter[type] = adapter;
         return true;
     }
-    if (!force && !!provisionAdapters.provisionerAdapter[type]) {
+    if (!force && !!ProvisionAdapters.provisionerAdapter[type]) {
         return false;
     }
-    provisionAdapters.provisionerAdapter[type] = adapter;
+    ProvisionAdapters.provisionerAdapter[type] = adapter;
 };
