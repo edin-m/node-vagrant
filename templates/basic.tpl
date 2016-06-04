@@ -19,24 +19,28 @@ Vagrant.configure(2) do |config|
   <% } %>
 
   <% if(typeof config.providers !== 'undefined') { %>
-  <% _.forEach(config.providers, function( settings,provider) { %>
+  <% _.forEach(config.providers, function(settings, provider) { %>
   config.vm.provider "<%= provider %>" do |<%= provider %>|
     <% _.forEach(settings, function(value, name) { %>
     <%= provider %>.<%= name %> = <%= value %>
-  <% }); %>
-  end
-  <% }); %>
-  <% }; %>
-
-
-  <% if(typeof config.provisioners !== 'undefined') { %>
-  <% _.forEach(config.provisioners, function( settings,provisioner) { %>
-  config.vm.provision "<%= provisioner %>" do |<%= provisioner %>|
-    <% _.forEach(settings, function(value, name) { %>
-    <%= provisioner %>.<%= name %> = <%= value %>
     <% }); %>
   end
   <% }); %>
   <% }; %>
+
+  <% if (_.isArray(config.provisioners)) { %>
+  <% _.forEach(config.provisioners, function(provisioner) { %>
+  config.vm.provision "<%= provisioner.type %>" do |<%= provisioner.alias %>|
+  <% if (!!provisioner.template) { %>
+    <%= provisioner.template %>
+  <% } else { %>
+    <% _.forEach(provisioner.config, function(value, name) { %>
+      <%= name %> = <%= value %>
+    <% }); %>
+  <% } %>
+  end
+  <% }) %>
+  <% } %>
+
 
 end

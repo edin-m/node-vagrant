@@ -6,6 +6,7 @@ var path = require('path');
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
+var provisionerAdapters = require('./provisioners');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
@@ -204,15 +205,38 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
         if(err) return cb(err);
 
         data = data.toString();
+        console.log(data, JSON.stringify(config, null, 4));
 
         var compiled = _.template(data);
         var rendered = compiled(config);
+        console.log(rendered);
+        process.exit(0);
 
         fs.writeFile(locVagrantfile, rendered, function(err) {
             if(err) return cb(err);
 
             cb(null);
         });
+    });
+};
+
+/**
+ * Transforms provisioner config to array and appends additional configuration
+ */
+Machine.prototype._prepareProvisioners = function(config) {
+    if (_.isObject(config.provisioners) && !_.isArray(config.provisioners)) {
+        // convert provisioners to array and add alias and type
+        var provisioners = config.provisioners;
+        config.provisioners = Object.keys(provisioners).reduce(function(prev, name) {
+            return prev.concat([{
+                alias: name.substr(0, 2),
+                type: name,
+                config: provisioners[name]
+            }]);
+        }, []);
+    }
+    config.provisioners.forEach(function (provisioner) {
+        provisioner.template = provisionerAdapters.createTemplate(provisioner);
     });
 };
 
@@ -223,11 +247,22 @@ Machine.prototype.init = function(args, config, cb) {
     var command = _command('init', args, ['-f']);
 
     var self = this;
+
+    // make config in form of { config: { ... } }
+    if (!_.isEmpty(config) && !config.hasOwnProperty('config')) {
+        var newconfig = config;
+        config = {};
+        config.config = newconfig;
+    }
+
+    self._prepareProvisioners(config.config);
+
     if(!_.isEmpty(config)) {
         this._run(command, function(err, res) {
             self._changeVagrantfile(config, function(err) {
                 if(err) return cb(err);
 
+                process.exit(0);
                 cb(null, res);
             });
         });
@@ -295,7 +330,7 @@ Machine.prototype.snapshots = function () {
             self._generic("snapshot delete", args, cb)
         }
     }
-}
+};
 
 Machine.prototype._generic = function(name, args, cb) {
     this._run(_command(name, args), cb);

@@ -1,0 +1,45 @@
+{
+    "config": {
+        "vm": {
+            "box": "ubuntu/trusty64"
+        },
+        "network": {
+            "type": "public_network",
+            "detail": {
+                "guest": 83,
+                "host": 85
+            }
+        },
+        "providers": {
+            "virtualbox": {
+                "memory": 384
+            },
+            "lxc": {
+                "container_name": "'test'"
+            }
+        },
+        "provisioners": [
+            {
+            	"shell": {
+                	"path": "'./provision.shell.sh'"
+            	}
+            },
+            {
+	            "ansible": {
+	                "playbook": "'playbook.yml'"
+	            }
+            },
+            {
+	            "docker": {
+	                "pull_images": "'ubuntu'"
+	            }
+	        },
+	        {
+	            "file": {
+	                "source": "'./Vagrantfile'",
+	                "destination": "'~/OutputVagrantfile'"
+	            }
+	        }
+        ]
+    }
+}

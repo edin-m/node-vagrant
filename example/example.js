@@ -61,6 +61,10 @@ function onInit(err, out) {
     });
 }
 
-machine.init('ubuntu/trusty64', onInit);
+//machine.init('ubuntu/trusty64', onInit);
+
+var config = require('../test/example1.config.json');
+machine.init('ubuntu/trusty64', config, onInit);
+
 
 //*/
