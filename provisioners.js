@@ -19,38 +19,38 @@ function GenericAdapter() {
     };
 }
 
-var ProvisionAdapters = {
-    provisionerAdapter: {},
-    get: function(type) {
-        if (!this.provisionerAdapter[type]) {
-            this.provisionerAdapter[type] = this.createProvisionerAdapter(type);
-        }
-        return this.provisionerAdapter[type];
+module.exports = {
+    _adapters: {},
+    createTemplate: function(provisionerConfig) {
+        return this.get(provisionerConfig.type).createTemplate(provisionerConfig);
     },
-    createProvisionerAdapter: function (type) {
+    get: function(type) {
+        if (!this._adapters[type]) {
+            this._adapters[type] = this._createBuiltInAdapter(type);
+        }
+        return this._adapters[type];
+    },
+    _createBuiltInAdapter: function (type) {
         if (type === 'docker') {
             return new DockerAdapter();
         }
         return new GenericAdapter();
+    },
+    removeAdapter: function(type) {
+        if (type in this._adapters) {
+            delete this._adapters[type];
+        }
+    },
+    addAdapter: function(type, adapter, force) {
+        force = force || false;
+        if (force) {
+            this._adapters[type] = adapter;
+            return true;
+        }
+        if (!force && !!this._adapters[type]) {
+            return false;
+        }
+        this._adapters[type] = adapter;
     }
 };
 
-module.exports.createTemplate = function (provisionerConfig) {
-    return ProvisionAdapters.get(provisionerConfig.type).createTemplate(provisionerConfig);
-};
-
-module.exports.get = function (type) {
-    return ProvisionAdapters.get(type);
-};
-
-module.exports.addAdapter = function (type, adapter, force) {
-    force = force || false;
-    if (force) {
-        ProvisionAdapters.provisionerAdapter[type] = adapter;
-        return true;
-    }
-    if (!force && !!ProvisionAdapters.provisionerAdapter[type]) {
-        return false;
-    }
-    ProvisionAdapters.provisionerAdapter[type] = adapter;
-};
