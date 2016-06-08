@@ -4,6 +4,9 @@ var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
 
+/**
+ * Split on newlines, trim lines and filter out empty lines
+ */
 function trimAndRemoveEmpty(result) {
     return result.split(/\n|\r/).map(function(item) {
         return item.trim();
@@ -14,8 +17,35 @@ function trimAndRemoveEmpty(result) {
 
 describe('Test provisioner adapters', function() {
     it('Generic name value adapter', function(done) {
-        var result = provisionerAdapters.get('unknownAdapter').createTemplate({});
-        expect(result.length).to.equal(0);
+        var provisionerConfig = {
+            name: 'wtf',
+            config: {
+                name: 'value',
+                name2: 'value2'
+            }
+        };
+        var result = provisionerAdapters.createTemplate(provisionerConfig);
+        var lines = trimAndRemoveEmpty(result);
+        expect(lines.length).to.equal(2);
+        done();
+    });
+    it('Commands provisioner adapter', function(done) {
+        var provisionerConfig = {
+            name: 'docker1',
+            config: {
+                commands: [
+                    'pull_images "ubuntu"',
+                    'pull_images "debian"',
+                    'run "rabbitmq"'
+                ]
+            }
+        };
+        var result = provisionerAdapters.createTemplate(provisionerConfig);
+        var lines = trimAndRemoveEmpty(result);
+        for (var i = 0; i < provisionerConfig.config.commands.length; i++) {
+            var reg = new RegExp(provisionerConfig.config.commands[i].replace('[', '\\[').replace(']', '\\]'));
+            expect(lines[i]).to.match(reg);
+        }
         done();
     });
     it('Docker adapter commands', function(done) {
@@ -33,7 +63,7 @@ describe('Test provisioner adapters', function() {
                 ]
             }
         };
-        var result = provisionerAdapters.get('docker').createTemplate(provisionerConfig);
+        var result = provisionerAdapters.createTemplate(provisionerConfig);
         var lines = trimAndRemoveEmpty(result);
         for (var i = 0; i < provisionerConfig.config.commands.length; i++) {
             var reg = new RegExp(provisionerConfig.config.commands[i].replace('[', '\\[').replace(']', '\\]'));
@@ -42,17 +72,20 @@ describe('Test provisioner adapters', function() {
         done();
     });
     it('Registering custom adapter', function(done) {
-        function CustomDockerAdapter() {
-            var tplFile = fs.readFileSync(path.join(__dirname, '../templates/docker.tpl')).toString();
+        /**
+         * Custom adapter must implement createTemplate() which receives provisionerConfig
+         */
+        function CustomAdapter() {
+            var tplFile = fs.readFileSync(path.join(__dirname, '../templates/commands.tpl')).toString();
             var compiled = _.template(tplFile);
             this.createTemplate = function (provisionerConfig) {
                 return compiled({
-                    provisionerAlias: provisionerConfig.alias || provisionerConfig.name,
+                    provisioner: provisionerConfig,
                     settings: provisionerConfig.config
                 });
             };
         }
-        provisionerAdapters.addAdapter('customAdapter', new CustomDockerAdapter());
+        provisionerAdapters.addAdapter('customAdapter', new CustomAdapter());
         provisionerAdapters.removeAdapter('customAdapter');
         var provisionerConfig = {
             name: 'custom1',
@@ -63,8 +96,9 @@ describe('Test provisioner adapters', function() {
                 ]
             }
         };
-        var result = provisionerAdapters.get('docker').createTemplate(provisionerConfig);
+        var result = provisionerAdapters.createTemplate(provisionerConfig);
         var lines = trimAndRemoveEmpty(result);
+        expect(lines[0]).to.match(new RegExp(provisionerConfig.config.commands[0]));
         done();
     });
 });

@@ -5,3 +5,4 @@ example/.vagrant
 node_modules
 test/Vagrantfile
 test/.vagrant
+.idea
