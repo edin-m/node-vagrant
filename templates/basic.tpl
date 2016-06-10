@@ -29,10 +29,8 @@ Vagrant.configure(2) do |config|
   <% }; %>
 
   <% _.forEach(config.provisioners, function(provisioner) { %>
-  config.vm.provision "<%= provisioner.type %>" do |<%= provisioner.name %>|
-    <% _.forEach(provisioner.templateLines, function(line) {
-    %><%= line %>
-  <% }) %>
+  config.vm.provision "<%= provisioner.type %>" do |<%= provisioner.name %>| <% _.forEach(provisioner.templateLines, function(line) { %>
+    <%= line %><% }) %>
   end
   <% }) %>
 end

@@ -221,6 +221,9 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
  * Transforms provisioner config to array and appends additional configuration
  */
 Machine.prototype._prepareProvisioners = function(config) {
+    if (!config.provisioners) {
+        config.provisioners = {};
+    }
     if (_.isObject(config.provisioners) && !_.isArray(config.provisioners)) {
         // convert provisioners to array and add name and type
         var provisioners = config.provisioners;
@@ -254,6 +257,10 @@ Machine.prototype.init = function(args, config, cb) {
         var newconfig = config;
         config = {};
         config.config = newconfig;
+    }
+
+    if (!config.config) {
+        config.config = {};
     }
 
     self._prepareProvisioners(config.config);
