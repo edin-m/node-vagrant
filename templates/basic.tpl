@@ -28,19 +28,11 @@ Vagrant.configure(2) do |config|
   <% }); %>
   <% }; %>
 
-  <% if (_.isArray(config.provisioners)) { %>
   <% _.forEach(config.provisioners, function(provisioner) { %>
-  config.vm.provision "<%= provisioner.type %>" do |<%= provisioner.alias %>|
-  <% if (!!provisioner.template) { %>
-    <%= provisioner.template %>
-  <% } else { %>
-    <% _.forEach(provisioner.config, function(value, name) { %>
-      <%= provisioner.alias %>.<%= name %> = <%= value %>
-    <% }); %>
-  <% } %>
+  config.vm.provision "<%= provisioner.type %>" do |<%= provisioner.name %>|
+    <% _.forEach(provisioner.templateLines, function(line) {
+    %><%= line %>
+  <% }) %>
   end
   <% }) %>
-  <% } %>
-
-
 end

@@ -32,16 +32,14 @@ module.exports = {
     _adapters: {},
     createTemplate: function(provisionerConfig) {
         /**
-         * There are two types of configurations: commands and name-value
+         * There are two types of provisioner adapters: commands and name-value
+         * Assume commands if there is .config.commands array
          */
-        if (provisionerConfig.type !== 'commands' && provisionerConfig.type !== 'name-value') {
-            if (provisionerConfig.config && provisionerConfig.config.commands && Array.isArray(provisionerConfig.config.commands)) {
-                provisionerConfig.type = 'commands';
-            } else {
-                provisionerConfig.type = 'name-value';
-            }
+        var provisionerAdaterType = 'name-value';
+        if (provisionerConfig.config && provisionerConfig.config.commands && Array.isArray(provisionerConfig.config.commands)) {
+            provisionerAdaterType = 'commands'
         }
-        return this._get(provisionerConfig.type).createTemplate(provisionerConfig);
+        return this._get(provisionerAdaterType).createTemplate(provisionerConfig);
     },
     _get: function(type) {
         if (!this._adapters[type]) {

@@ -222,20 +222,22 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
  */
 Machine.prototype._prepareProvisioners = function(config) {
     if (_.isObject(config.provisioners) && !_.isArray(config.provisioners)) {
-        // convert provisioners to array and add alias and type
+        // convert provisioners to array and add name and type
         var provisioners = config.provisioners;
         config.provisioners = Object.keys(provisioners).reduce(function(prev, name) {
             return prev.concat([{
                 name: name,
-                alias: name,
                 type: name,
                 config: provisioners[name]
             }]);
         }, []);
     }
     config.provisioners.forEach(function (provisioner) {
-        provisioner.alias = provisioner.alias || provisioner.name;
-        provisioner.template = provisionerAdapters.createTemplate(provisioner);
+        provisioner.templateLines = provisionerAdapters.createTemplate(provisioner).split(/\n|\r/).map(function(item) {
+            return item.trim();
+        }).filter(function(item) {
+            return item.length > 0;
+        });
     });
 };
 

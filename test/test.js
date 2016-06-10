@@ -12,9 +12,9 @@ describe('it should test node-vagrant', function() {
         done();
     });
 
-    it.skip('should test creation of vagrant file with config', function(done) {
+    it('should test creation of vagrant file with config', function(done) {
         this.timeout(20000);
-        var config = require('./example1.config.json');
+        var config = require('./example2.config.json');
         machine.init('ubuntu/trusty64', config, function(err, out) {
             expect(err).to.not.exist;
 

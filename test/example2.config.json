@@ -29,25 +29,39 @@
             {
                 "type": "ansible",
                 "name": "ansible1",
-	            "config": {
-	                "playbook": "'playbook.yml'"
-	            }
+                "config": {
+                    "playbook": "'playbook.yml'"
+                }
             },
             {
                 "type": "docker",
                 "name": "docker1",
-	            "config": {
-	                "pull_images": "'ubuntu'"
-	            }
-	        },
-	        {
+                "config": {
+                    "pull_images": "'ubuntu'"
+                }
+            },
+            {
+                "type": "docker",
+                "name": "docker2",
+                "config": {
+                    "commands": [
+                        "pull_images 'ubuntu'",
+                        "pull_images 'ubuntu'",
+                        "run 'rabbitmq'",
+                        "run \"ubuntu\", cmd: \"bash -l\", args: \"-v '/vagrant:/var/www'\"",
+                        "run \"db-1\", image: \"user/mysql\"",
+                        "images: [\"ubuntu\", \"gentoo\"]"
+                    ]
+                }
+            },
+            {
                 "type": "file",
                 "name": "file1",
-	            "config": {
-	                "source": "'./Vagrantfile'",
-	                "destination": "'~/OutputVagrantfile'"
-	            }
-	        }
+                "config": {
+                    "source": "'./Vagrantfile'",
+                    "destination": "'~/OutputVagrantfile'"
+                }
+            }
         ]
     }
 }
