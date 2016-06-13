@@ -53,7 +53,6 @@ Vagrant.configure(2) do |config|
     docker2.run 'rabbitmq'
     docker2.run "ubuntu", cmd: "bash -l", args: "-v '/vagrant:/var/www'"
     docker2.run "db-1", image: "user/mysql"
-    docker2.images: ["ubuntu", "gentoo"]
   end
   
   config.vm.provision "file" do |file1| 

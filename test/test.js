@@ -157,6 +157,63 @@ describe('it should test node-vagrant', function() {
             };
             machine.destroy();
         });
+        it('should test snapshots() push()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(2);
+                expect(command[0]).to.equal('snapshot');
+                expect(command[1]).to.equal('push');
+                done();
+            };
+            machine.snapshots().push();
+        });
+        it('should test snapshots() pop()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(2);
+                expect(command[0]).to.equal('snapshot');
+                expect(command[1]).to.equal('pop');
+                done();
+            };
+            machine.snapshots().pop();
+        });
+        it('should test snapshots() save()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(1);
+                expect(command[0]).to.equal('snapshot save');
+                done();
+            };
+            machine.snapshots().save();
+        });
+        it('should test snapshots() delete()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(1);
+                expect(command[0]).to.equal('snapshot delete');
+                done();
+            };
+            machine.snapshots().delete();
+        });
+        it('should test snapshots() restore()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(1);
+                expect(command[0]).to.equal('snapshot restore');
+                done();
+            };
+            machine.snapshots().restore();
+        });
+        it('should test snapshots() list()', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(2);
+                expect(command[0]).to.equal('snapshot');
+                expect(command[1]).to.equal('list');
+                done();
+            };
+            machine.snapshots().list();
+        });
         after(function(done) {
             machine._run = runFuncBefore;
             done();

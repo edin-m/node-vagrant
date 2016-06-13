@@ -49,8 +49,7 @@
                         "pull_images 'ubuntu'",
                         "run 'rabbitmq'",
                         "run \"ubuntu\", cmd: \"bash -l\", args: \"-v '/vagrant:/var/www'\"",
-                        "run \"db-1\", image: \"user/mysql\"",
-                        "images: [\"ubuntu\", \"gentoo\"]"
+                        "run \"db-1\", image: \"user/mysql\""
                     ]
                 }
             },
