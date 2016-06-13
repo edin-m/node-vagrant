@@ -35,21 +35,29 @@ Vagrant.configure(2) do |config|
   
 
   
-  config.vm.provision "shell" do |shell| 
-    shell.path = './provision.shell.sh'
+  config.vm.provision "shell" do |shell1| 
+    shell1.path = './provision.shell.sh'
   end
   
-  config.vm.provision "ansible" do |ansible| 
-    ansible.playbook = 'playbook.yml'
+  config.vm.provision "ansible" do |ansible1| 
+    ansible1.playbook = 'playbook.yml'
   end
   
-  config.vm.provision "docker" do |docker| 
-    docker.pull_images = 'ubuntu'
+  config.vm.provision "docker" do |docker1| 
+    docker1.pull_images = 'ubuntu'
   end
   
-  config.vm.provision "file" do |file| 
-    file.source = './Vagrantfile'
-    file.destination = '~/OutputVagrantfile'
+  config.vm.provision "docker" do |docker2| 
+    docker2.pull_images 'ubuntu'
+    docker2.pull_images 'ubuntu'
+    docker2.run 'rabbitmq'
+    docker2.run "ubuntu", cmd: "bash -l", args: "-v '/vagrant:/var/www'"
+    docker2.run "db-1", image: "user/mysql"
+  end
+  
+  config.vm.provision "file" do |file1| 
+    file1.source = './Vagrantfile'
+    file1.destination = '~/OutputVagrantfile'
   end
   
 end
