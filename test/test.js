@@ -3,6 +3,9 @@ var path = require('path');
 var vagrant = require('../index');
 var expect = require('chai').expect;
 
+/* eslint no-unused-vars: ["error", { "args": "none" }] */
+/* eslint quotes: "off" */
+
 describe('it should test node-vagrant', function() {
     var machine;
 
@@ -58,24 +61,6 @@ describe('it should test node-vagrant', function() {
     describe('should test vagrant commands', function() {
         // mock _mainRun as to call a callback within tests
         var runFuncBefore;
-        var interceptRunFunc = function(command, opts, cb) {
-            if (this.callCb) {
-                cb(this.callCbErr, this.callCbOut);
-            }
-            this.onCall(command, opts);
-            return {
-                stdout: { on: function() { } },
-                stderr: { }
-            };
-        };
-        var setupInterceptCallback = function(cb) {
-            machine._mainRun = interceptRunFunc.bind({
-                callCb: false,
-                callCbErr: null,
-                callCbOut: '',
-                onCall: cb
-            });
-        };
         before(function(done) {
             runFuncBefore = machine._run;
             done();
@@ -248,7 +233,6 @@ describe('it should test node-vagrant', function() {
             expect(provisioner).to.be.an('object');
             var origKey = Object.keys(exprovisioners)[index];
             expect(provisioner.name).to.equal(origKey);
-            //expect(provisioner.type).to.equal(origKey);
             var orig = exprovisioners[origKey];
             for (var key in provisioner.config) {
                 expect(provisioner.config[key]).to.equal(orig[key]);

@@ -16,8 +16,12 @@ vagrant.version(function(err, out) {
 var machine = vagrant.create({ cwd: process.cwd(), env: process.env });
 
 function onInit(err, out) {
-    if(err) throw new Error(err);
-    
+    if (err) {
+        throw new Error(err);
+    }
+
+    /* eslint no-unused-vars: ["error", { "args": "none" }] */
+
     machine.on('progress', function() {
         console.log('download progress: ', [].slice.call(arguments));
     });
@@ -27,7 +31,9 @@ function onInit(err, out) {
     });
 
     machine.up(function(err, out) {
-        if(err) throw new Error(err);
+        if (err) {
+            throw new Error(err);
+        }
         
         machine.status(function(err, out) {
             console.log(err, out);
@@ -51,7 +57,7 @@ function onInit(err, out) {
                                     console.log(err, out);
                                 });
 
-                                fs.unlinkSync('./Vagrantfile')
+                                fs.unlinkSync('./Vagrantfile');
                             });
                         });
                     });
@@ -61,10 +67,8 @@ function onInit(err, out) {
     });
 }
 
-//machine.init('ubuntu/trusty64', onInit);
+// machine.init('ubuntu/trusty64', onInit);
 
 var config = require('../test/example1.config.json');
 machine.init('ubuntu/trusty64', config, onInit);
 
-
-//*/

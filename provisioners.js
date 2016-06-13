@@ -37,7 +37,7 @@ module.exports = {
          */
         var provisionerAdaterType = 'name-value';
         if (provisionerConfig.config && provisionerConfig.config.commands && Array.isArray(provisionerConfig.config.commands)) {
-            provisionerAdaterType = 'commands'
+            provisionerAdaterType = 'commands';
         }
         return this._get(provisionerAdaterType).createTemplate(provisionerConfig);
     },
