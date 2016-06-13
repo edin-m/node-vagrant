@@ -28,7 +28,7 @@ describe('it should test node-vagrant', function() {
             var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
 
             // for previewing purposes
-            fs.writeFileSync('./out.example1.Vagrantfile', Vagrantfile);
+            fs.writeFileSync(path.join(__dirname, 'out.example1.Vagrantfile'), Vagrantfile);
 
             expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
             fs.unlinkSync(origLoc);
@@ -50,7 +50,7 @@ describe('it should test node-vagrant', function() {
             var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
 
             // for previewing purposes
-            fs.writeFileSync('./out.example2.Vagrantfile', Vagrantfile);
+            fs.writeFileSync(path.join(__dirname, 'out.example2.Vagrantfile'), Vagrantfile);
 
             expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
             fs.unlinkSync(origLoc);
@@ -249,6 +249,7 @@ describe('it should test node-vagrant', function() {
         ];
         filesToUnlink.forEach(function(filename) {
             if (fs.existsSync(filename)) {
+                // comment out this line to be able to see output example Vagrantfiles
                 fs.unlinkSync(filename);
             }
         });
