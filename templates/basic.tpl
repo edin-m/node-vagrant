@@ -18,6 +18,18 @@ Vagrant.configure(2) do |config|
   config.vm.network "<%= config.network.type %>"<% _.forEach(config.network.detail, function(value, key) { %>, <%= key %>: <% if(typeof value === 'string') { %>"<%=value%>"<% } else { %><%=value%><% } %><% }); %>
   <% } %>
 
+  <% if(typeof config.multimachine !== 'undefined') { %>
+  <% _.forEach(config.multimachine, function(machine) { %>
+  config.vm.define "<%= machine.name %>"<%=
+                                            (!!machine.isPrimary ? ', primary: true' : '') %><%=
+                                            (typeof machine.autostart === 'undefined' ? '' :
+                                                (', autostart: ' + (!!machine.autostart ? 'true' : 'false'))) %> do |<%= machine.name %>|
+<% _.forEach(machine.commands, function(command) {
+%>    <%= machine.name %>.<%= command %><% }) %>
+  end
+  <% }) %>
+  <% } %>
+
   <% if(typeof config.providers !== 'undefined') { %>
   <% _.forEach(config.providers, function(settings, provider) { %>
   config.vm.provider "<%= provider %>" do |<%= provider %>|

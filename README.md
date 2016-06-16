@@ -30,14 +30,13 @@ var vagrant = require('node-vagrant');
 vagrant.version(function(err, out) ...
 
 // view global status
-//you can specify '--prune' as additional argument. By default global-status is based on a cache, 
-//prune removes invalid entries from the list. 
-//Note that this is much more time consuming than simply listing the entries.
 vagrant.globalStatus(function(err, out) ...
-vagrant.globalStatus('--prune', function(err, out) ...
 // out is [] array of {} objects with properties: id, name, provider, state, cwd
 
-
+// you can specify '--prune' as additional argument. By default global-status is based on a cache,
+// prune removes invalid entries from the list.
+// Note that this is much more time consuming than simply listing the entries.
+vagrant.globalStatus('--prune', function(err, out) ...
 
 // create machine - does not run command or init machine
 // you can specify directory where Vagrantfile will be located
@@ -45,9 +44,8 @@ vagrant.globalStatus('--prune', function(err, out) ...
 var machine = vagrant.create({ cwd: ..., env: ... });
 
 // init machine
-// you can specify additional arguments by using array (applicable to other functions)
 machine.init('ubuntu/trusty64', function(err, out) ...
-machine.init(['ubuntu/trusty64'], function(err, out) ...
+// you can specify additional arguments by using array (applicable to other functions)
 // -f is set by default
 machine.init(['ubuntu/trusty64', '-f'], function(err, out) ...
 
@@ -81,6 +79,18 @@ machine.snapshots().push(cb);
 
 ```
 
+Some commands can accept additional arguments so for ```up()``` you can specify name or id of a machine.
+
+```
+machine.up('web', ...) // or
+machine.up('68c01a5', ...) // or multiple parameters in an array
+
+// you can specify additional arguments by using array (applicable to other functions)
+machine.init(['ubuntu/trusty64'], function(err, out) ...
+```
+
+Functions accepting additional parameters
+
 Events
 ===
 ```
@@ -94,13 +104,33 @@ Example
 
 Example script of a usage is in example/example.js
 
+Provisioning
+---
+
+[How to configure provisioning](example/provision.js)
+
+Multimachine
+---
+
+[How to configure multiple machines](example/multimachine.js)
+
+```
+machine.up() // all machines up - unles autostart is set to false
+
+machine.up('web')
+```
+
+All functions accepting additional arguments work in this manner.
+
+View
+
 ```
 npm run example
 ```
 
 TODO
 ===
-- multi-machine
+- ~~multi-machine~~
 - more detail vagrant file settings
     - firewall
     - networking

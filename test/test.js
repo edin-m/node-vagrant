@@ -14,13 +14,12 @@ describe('it should test node-vagrant', function() {
         done();
     });
 
-    it('should test creation of example1 Vagrantfile', function(done) {
+    it('should test creation of example1 Vagrantfile - backward compatibile conifg', function(done) {
         this.timeout(20000);
         var config = require('./example1.config.json');
         machine.init('ubuntu/trusty64', config, function(err, out) {
             expect(err).to.not.exist;
 
-            machine.isInitialized = true;
             var origLoc = path.join(__dirname, 'Vagrantfile');
             var exampleLoc = path.join(__dirname, 'example1.Vagrantfile');
 
@@ -42,7 +41,6 @@ describe('it should test node-vagrant', function() {
         machine.init('ubuntu/trusty64', config, function(err, out) {
             expect(err).to.not.exist;
 
-            machine.isInitialized = true;
             var origLoc = path.join(__dirname, 'Vagrantfile');
             var exampleLoc = path.join(__dirname, 'example2.Vagrantfile');
 
@@ -199,6 +197,17 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().list();
         });
+        it('should test multimachine up() ', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(2);
+                expect(command[0]).to.equal('up');
+                expect(command[1]).to.equal('web');
+                done();
+                return { stdout: { on: function() { } }, stderr: { } };
+            };
+            machine.up('web');
+        });
         after(function(done) {
             machine._run = runFuncBefore;
             done();
@@ -206,6 +215,7 @@ describe('it should test node-vagrant', function() {
     });
 
     it('should prepare provisioners from object config to array config', function(done) {
+        // NOTE: do not use this configuration in config; it is obsolete
         var config = {
             config: {
                 provisioners: {
@@ -241,11 +251,112 @@ describe('it should test node-vagrant', function() {
         done();
     });
 
+    it('should use valid provisioners config', function(done) {
+        // This provisioners config is way to go
+        var config = {
+            config: {
+                provisioners: [
+                    {
+                        name: 'shell_1',
+                        type: 'shell',
+                        config: {
+                            commands: [
+                                'path = "./provision.shell.sh"'
+                            ]
+                        }
+                    },
+                    {
+                        name: 'ansimble_1',
+                        type: 'ansimble',
+                        config: {
+                            commands: [
+                                'playbook: "playbook.yml"'
+                            ]
+                        }
+                    },
+                    {
+                        name: 'docker_1',
+                        type: 'docker',
+                        config: {
+                            commands: [
+                                'pull_images: "ubuntu"'
+                            ]
+                        }
+                    },
+                    {
+                        name: 'file_1',
+                        type: 'file',
+                        config: {
+                            commands: [
+                                'source: "./Vagrantfile"',
+                                'destination: "~/OutputVagrantfile"'
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+        machine._prepareProvisioners(config.config);
+        expect(config.config.provisioners).to.be.an('array');
+        expect(config.config.provisioners.length).to.equal(4);
+        config.config.provisioners.forEach(function (provisioner, index) {
+            expect(provisioner).to.be.an('object');
+        });
+        done();
+    });
+
+    it('should test creation of multimachine Vagrantfile', function(done) {
+        this.timeout(20000);
+        var config = {
+            config: {
+                multimachine: [
+                    {
+                        name: 'web',
+                        commands: [
+                            'vm.box = "apache"'
+                        ]
+                    },
+                    {
+                        name: 'db',
+                        isPrimary: true,
+                        commands: [
+                            'vm.box = "mysql"'
+                        ]
+                    },
+                    {
+                        name: 'db_follower',
+                        autostart: false,
+                        commands: [
+                            'vm.box = "mysql"'
+                        ]
+                    }
+                ]
+            }
+        };
+        machine.init('ubuntu/trusty64', config, function(err, out) {
+            expect(err).to.not.exist;
+            var outName = 'example3.Vagrantfile';
+            var origLoc = path.join(__dirname, 'Vagrantfile');
+            var exampleLoc = path.join(__dirname, outName);
+
+            var Vagrantfile = fs.readFileSync(origLoc).toString();
+            var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
+
+            // for previewing purposes
+            fs.writeFileSync(path.join(__dirname, 'out.' + outName), Vagrantfile);
+
+            expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
+            fs.unlinkSync(origLoc);
+            done();
+        });
+    });
+
     after(function(done) {
         this.timeout(20000);
         var filesToUnlink = [
             path.join(__dirname, 'out.example1.Vagrantfile'),
-            path.join(__dirname, './out.example2.Vagrantfile')
+            path.join(__dirname, 'out.example2.Vagrantfile'),
+            path.join(__dirname, 'out.example3.Vagrantfile')
         ];
         filesToUnlink.forEach(function(filename) {
             if (fs.existsSync(filename)) {
