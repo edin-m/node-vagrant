@@ -164,7 +164,6 @@ Machine.prototype.status = function(cb) {
             return cb(err);
         }
 
-        // var statusParser = require('./parseStatus');
         var statuses = statusParser(out);
 
         cb(null, statuses);
