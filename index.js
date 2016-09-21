@@ -133,8 +133,9 @@ Machine.prototype._run = function(command, cb) {
     return child;
 };
 
-Machine.prototype.sshConfig = function(cb) {
-    var command = _command('ssh-config');
+Machine.prototype.sshConfig = function(args, cb) {
+    cb = cb || args;
+    var command = _command('ssh-config', args);
 
     this._run(command, function(err, out) {
         if (err) {

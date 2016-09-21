@@ -93,7 +93,7 @@ describe('it should test node-vagrant', function() {
             };
             machine.status();
         });
-        it('should test vagrant sshStatus', function(done) {
+        it('should test vagrant sshConfig', function(done) {
             machine._run = function(command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -207,6 +207,16 @@ describe('it should test node-vagrant', function() {
                 return { stdout: { on: function() { } }, stderr: { } };
             };
             machine.up('web');
+        });
+        it('should test multimachine sshConfig() ', function(done) {
+            machine._run = function(command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(2);
+                expect(command[0]).to.equal('ssh-config');
+                expect(command[1]).to.equal('web');
+                done();
+            };
+            machine.sshConfig("web");
         });
         after(function(done) {
             machine._run = runFuncBefore;
