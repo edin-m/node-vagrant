@@ -10,6 +10,10 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  <% _.forEach(config.ssh, function(value, key) { %>
+  config.ssh.<%=key%> = "<%=value%>"
+  <% }); %>
+
   <% _.forEach(config.vm, function(value, key) { %>
   config.vm.<%=key%> = "<%=value%>"
   <% }); %>
