@@ -9,6 +9,7 @@
   "scripts": {
     "example": "cd example && node example.js",
     "test": "node ./node_modules/mocha/bin/mocha test",
+    "test-all": "RUN_INTEGRATION_TESTS=1 && node ./node_modules/mocha/bin/mocha test",
     "lint": "eslint src/ test/ index.js"
   },
   "author": {

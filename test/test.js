@@ -1,7 +1,6 @@
-var fs = require('fs');
-var path = require('path');
-var vagrant = require('../index');
 var expect = require('chai').expect;
+
+var vagrant = require('../index');
 
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 /* eslint quotes: "off" */
@@ -12,50 +11,6 @@ describe('it should test node-vagrant', function () {
     before(function (done) {
         machine = vagrant.create({ cwd: __dirname });
         done();
-    });
-
-    it('should test creation of example1 Vagrantfile', function (done) {
-        this.timeout(20000);
-        var config = require('./example1.config.json');
-        machine.init('ubuntu/trusty64', config, function (err, out) {
-            expect(err).to.not.exist;
-
-            machine.isInitialized = true;
-            var origLoc = path.join(__dirname, 'Vagrantfile');
-            var exampleLoc = path.join(__dirname, 'example1.Vagrantfile');
-
-            var Vagrantfile = fs.readFileSync(origLoc).toString();
-            var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
-
-            // for previewing purposes
-            fs.writeFileSync(path.join(__dirname, 'out.example1.Vagrantfile'), Vagrantfile);
-
-            expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
-            fs.unlinkSync(origLoc);
-            done();
-        });
-    });
-
-    it('should test creation of example2 Vagranfile', function (done) {
-        this.timeout(20000);
-        var config = require('./example2.config.json');
-        machine.init('ubuntu/trusty64', config, function (err, out) {
-            expect(err).to.not.exist;
-
-            machine.isInitialized = true;
-            var origLoc = path.join(__dirname, 'Vagrantfile');
-            var exampleLoc = path.join(__dirname, 'example2.Vagrantfile');
-
-            var Vagrantfile = fs.readFileSync(origLoc).toString();
-            var exampleVagrantfile = fs.readFileSync(exampleLoc).toString();
-
-            // for previewing purposes
-            fs.writeFileSync(path.join(__dirname, 'out.example2.Vagrantfile'), Vagrantfile);
-
-            expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
-            // fs.unlinkSync(origLoc);
-            done();
-        });
     });
 
     describe('should test vagrant commands', function () {
@@ -199,66 +154,45 @@ describe('it should test node-vagrant', function () {
             };
             machine.snapshots().list();
         });
-        after(function (done) {
-            machine._run = runFuncBefore;
-            done();
-        });
-    });
 
-    it('should prepare provisioners from object config to array config', function (done) {
-        var config = {
-            config: {
-                provisioners: {
-                    shell: {
-                        path: "'./provision.shell.sh'"
-                    },
-                    ansible: {
-                        playbook: "'playbook.yml'"
-                    },
-                    docker: {
-                        pull_images: "'ubuntu'"
-                    },
-                    file: {
-                        source: "'./Vagrantfile'",
-                        destination: "'~/OutputVagrantfile'"
+        it('should prepare provisioners from object config to array config', function (done) {
+            var config = {
+                config: {
+                    provisioners: {
+                        shell: {
+                            path: "'./provision.shell.sh'"
+                        },
+                        ansible: {
+                            playbook: "'playbook.yml'"
+                        },
+                        docker: {
+                            pull_images: "'ubuntu'"
+                        },
+                        file: {
+                            source: "'./Vagrantfile'",
+                            destination: "'~/OutputVagrantfile'"
+                        }
                     }
                 }
-            }
-        };
-        var exprovisioners = config.config.provisioners;
-        machine._prepareProvisioners(config.config);
-        expect(config.config.provisioners).to.be.an('array');
-        expect(config.config.provisioners.length).to.equal(4);
-        config.config.provisioners.forEach(function (provisioner, index) {
-            expect(provisioner).to.be.an('object');
-            var origKey = Object.keys(exprovisioners)[index];
-            expect(provisioner.name).to.equal(origKey);
-            var orig = exprovisioners[origKey];
-            for (var key in provisioner.config) {
-                expect(provisioner.config[key]).to.equal(orig[key]);
-            }
-        });
-        done();
-    });
-    
-    it('should destroy machine', function (done) {
-        machine.destroy(function (err, res) {
-            expect(err).to.not.exist;
+            };
+            var exprovisioners = config.config.provisioners;
+            machine._prepareProvisioners(config.config);
+            expect(config.config.provisioners).to.be.an('array');
+            expect(config.config.provisioners.length).to.equal(4);
+            config.config.provisioners.forEach(function (provisioner, index) {
+                expect(provisioner).to.be.an('object');
+                var origKey = Object.keys(exprovisioners)[index];
+                expect(provisioner.name).to.equal(origKey);
+                var orig = exprovisioners[origKey];
+                for (var key in provisioner.config) {
+                    expect(provisioner.config[key]).to.equal(orig[key]);
+                }
+            });
             done();
         });
-    });
 
-    after(function (done) {
-        this.timeout(20000);
-        var filesToUnlink = [
-            path.join(__dirname, 'out.example1.Vagrantfile'),
-            path.join(__dirname, './out.example2.Vagrantfile')
-        ];
-        filesToUnlink.forEach(function (filename) {
-            if (fs.existsSync(filename)) {
-                // comment out this line to be able to see output example Vagrantfiles
-                fs.unlinkSync(filename);
-            }
+        after(function (done) {
+            machine._run = runFuncBefore;
             done();
         });
     });
