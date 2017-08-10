@@ -9,31 +9,43 @@
   "scripts": {
     "example": "cd example && node example.js",
     "test": "node ./node_modules/mocha/bin/mocha test",
-    "lint": "eslint src/ test/ index.js parseStatus.js provisioners.js"
+    "lint": "eslint src/ test/ index.js"
   },
   "author": {
     "name": "Edin Mujagic"
   },
   "contributors": [
-      { "name": "Maximilian Klein", "url": "https://github.com/LittleHelicase" },
-      { "name": "Jacob Payne", "url": "https://github.com/Latrasis" },
-      { "name": "Friedemann Stoffregen", "url": "https://github.com/Donderda" },
-      { "name": "Leonardo Nahra", "url": "https://github.com/lanahra" }
+    {
+      "name": "Maximilian Klein",
+      "url": "https://github.com/LittleHelicase"
+    },
+    {
+      "name": "Jacob Payne",
+      "url": "https://github.com/Latrasis"
+    },
+    {
+      "name": "Friedemann Stoffregen",
+      "url": "https://github.com/Donderda"
+    },
+    {
+      "name": "Leonardo Nahra",
+      "url": "https://github.com/lanahra"
+    }
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/edin-m/node-vagrant.git"
   },
   "bugs": {
-      "url": "https://github.com/edin-m/node-vagrant/issues"
+    "url": "https://github.com/edin-m/node-vagrant/issues"
   },
   "homepage": "https://github.com/edin-m/node-vagrant",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^3.3.0"
+    "lodash": "3.3.0"
   },
   "devDependencies": {
-    "chai": "^2.1.0",
-    "mocha": "^2.2.1"
+    "chai": "2.1.0",
+    "mocha": "2.2.1"
   }
 }
