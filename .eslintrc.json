@@ -65,6 +65,9 @@
                 "named": "never"
             }
         ],
-        "eol-last": 2
+        // require end-of-file newline
+        "eol-last": 2,
+        // warn unnecessary escapes
+        "no-useless-escape": 1
     }
 }
