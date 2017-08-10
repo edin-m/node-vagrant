@@ -6,7 +6,6 @@ var path = require('path');
 var _ = require('lodash');
 var fs = require('fs');
 var provisionerAdapters = require('./provisioners');
-var statusParser = require('./parseStatus');
 var parsers = require('./parsers');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
@@ -163,7 +162,7 @@ Machine.prototype.status = function (cb) {
             return cb(err);
         }
 
-        var statuses = statusParser(out);
+        var statuses = parsers.statusParser(out);
 
         cb(null, statuses);
     });
