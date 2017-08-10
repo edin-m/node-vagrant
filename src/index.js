@@ -18,11 +18,6 @@ var SSH_CONFIG_MATCHERS = {
     private_key: /IdentityFile (\S+)$/mi,
 };
 
-var MATCHERS = {
-    progress: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i,
-    Downloading: 'Downloading'
-};
-
 function Machine(opts) {
     opts = opts || {};
 
@@ -180,7 +175,7 @@ Machine.prototype.up = function (args, cb) {
 
         self.emit('up-progress', data);
 
-        var res = parsers.parseDownloadStatus(data);
+        var res = parsers.downloadStatusParser(data);
         if (res) {
             self.emit('progress', res.machine, res.progress, res.rate, res.remaining);
         }

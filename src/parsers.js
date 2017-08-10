@@ -2,7 +2,10 @@ var MATCHERS = {
     download: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i
 };
 
-function parseDownloadStatus(data) {
+/**
+ *
+ */
+function downloadStatusParser(data) {
     var res = data.match(MATCHERS.download);
     if (res) {
         return {
@@ -47,5 +50,6 @@ function statusParser(status_text) {
  *
  */
 module.exports = {
-    parseDownloadStatus: parseDownloadStatus
+    downloadStatusParser: downloadStatusParser,
+    statusParser: statusParser
 };
