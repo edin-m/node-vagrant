@@ -53,7 +53,7 @@ describe('it should test node-vagrant', function () {
             fs.writeFileSync(path.join(__dirname, 'out.example2.Vagrantfile'), Vagrantfile);
 
             expect(Vagrantfile.replace(/[\n\r]/gm, '')).to.equal(exampleVagrantfile.replace(/[\n\r]/gm, ''));
-            fs.unlinkSync(origLoc);
+            // fs.unlinkSync(origLoc);
             done();
         });
     });
@@ -240,6 +240,13 @@ describe('it should test node-vagrant', function () {
         });
         done();
     });
+    
+    it('should destroy machine', function (done) {
+        machine.destroy(function (err, res) {
+            expect(err).to.not.exist;
+            done();
+        });
+    });
 
     after(function (done) {
         this.timeout(20000);
@@ -252,9 +259,6 @@ describe('it should test node-vagrant', function () {
                 // comment out this line to be able to see output example Vagrantfiles
                 fs.unlinkSync(filename);
             }
-        });
-        machine.destroy(function (err, res) {
-            expect(err).to.not.exist;
             done();
         });
     });
