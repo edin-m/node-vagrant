@@ -120,7 +120,7 @@ Machine.prototype._run = function(command, cb) {
         env: self.opts.env,
     }, function(err, data) {
         self._runningCommand = false;
-        const next = self.batch.pop();
+        var next = self.batch.pop();
         if (next) {
             self._run(next.command, next.cb);
         }
