@@ -8,7 +8,7 @@ var path = require('path');
  */
 
 function CommandsAdapter() {
-    var tplFile = fs.readFileSync(path.join(__dirname, 'templates/commands.tpl')).toString();
+    var tplFile = fs.readFileSync(path.join(__dirname, '../templates/commands.tpl')).toString();
     var compiled = _.template(tplFile);
     this.createTemplate = function (provisionerConfig) {
         return compiled({
@@ -19,7 +19,7 @@ function CommandsAdapter() {
 }
 
 function NameValueAdapter() {
-    var tplFile = fs.readFileSync(path.join(__dirname, 'templates/name-value.tpl')).toString();
+    var tplFile = fs.readFileSync(path.join(__dirname, '../templates/name-value.tpl')).toString();
     var compiled = _.template(tplFile);
     this.createTemplate = function (provisionerConfig) {
         return compiled({

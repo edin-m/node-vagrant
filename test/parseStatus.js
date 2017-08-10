@@ -2,7 +2,7 @@ var fs = require('fs');
 var expect = require('chai').expect;
 
 var exStats = fs.readFileSync('./test/status').toString();
-var ps = require('../parseStatus');
+var ps = require('../src/parseStatus');
 
 describe('Vagrant status parsing', function () {
     it('should parse all status information',function () {

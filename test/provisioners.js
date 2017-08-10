@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var provisionerAdapters = require('../provisioners');
+var provisionerAdapters = require('../src/provisioners');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
