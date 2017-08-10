@@ -72,6 +72,10 @@
         // warn unnecessary escapes
         "no-useless-escape": 1,
         // disallow padding within blocks
-        "padded-blocks": [2, "never"]
+        "padded-blocks": [2, "never"],
+        // no spaces in brackets
+        "array-bracket-spacing": 1,
+        // yes to spaces in braces
+        "object-curly-spacing": [1, "always"]
     }
 }

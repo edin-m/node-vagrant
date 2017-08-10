@@ -105,7 +105,7 @@ function run(command, opts, cb) {
 Machine.prototype._run = function (command, cb) {
     var self = this;
     if (self._runningCommand) {
-        self.batch.push({command: command, cb: cb});
+        self.batch.push({ command: command, cb: cb });
         return;
     }
 
