@@ -7,6 +7,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var provisionerAdapters = require('./provisioners');
 var statusParser = require('./parseStatus');
+var parsers = require('./parsers');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
@@ -178,17 +179,11 @@ Machine.prototype.up = function (args, cb) {
     proc.stdout.on('data', function (buff) {
         var data = buff.toString();
 
-        var res = data.match(MATCHERS.progress);
-
         self.emit('up-progress', data);
 
+        var res = parsers.parseDownloadStatus(data);
         if (res) {
-            var machine = res[1];
-            var progress = res[2];
-            var rate = res[3];
-            var remaining = res[4];
-
-            self.emit('progress', machine, progress, rate, remaining);
+            self.emit('progress', res.machine, res.progress, res.rate, res.remaining);
         }
     });
 };
