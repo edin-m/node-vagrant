@@ -10,14 +10,6 @@ var parsers = require('./parsers');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
 
-var SSH_CONFIG_MATCHERS = {
-    host: /Host (\S+)$/mi,
-    port: /Port (\S+)$/mi,
-    hostname: /HostName (\S+)$/mi,
-    user: /User (\S+)$/mi,
-    private_key: /IdentityFile (\S+)$/mi,
-};
-
 function Machine(opts) {
     opts = opts || {};
 
@@ -133,18 +125,7 @@ Machine.prototype.sshConfig = function (cb) {
         if (err) {
             return cb(err);
         }
-        var configs = out.split('\n\n')
-            .filter(function (out) {
-                return !_.isEmpty(out);
-            })
-            .map(function (out) {
-                var config = {};
-                for (var key in SSH_CONFIG_MATCHERS) {
-                    config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
-                }
-                return config;
-            });
-
+        var configs = parsers.sshConfigParser(out);
         cb(null, configs);
     });
 };
@@ -156,9 +137,7 @@ Machine.prototype.status = function (cb) {
         if (err) {
             return cb(err);
         }
-
         var statuses = parsers.statusParser(out);
-
         cb(null, statuses);
     });
 };
@@ -339,9 +318,7 @@ module.exports.globalStatus = function (args, cb) {
         if (err) {
             return cb(err);
         }
-
         var lines = parsers.globalStatusParser(out);
-
         cb(null, lines);
     });
 };

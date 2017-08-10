@@ -55,7 +55,7 @@ describe('test parsers', function () {
             port: '2222',
             hostname: '127.0.0.1',
             user: 'vagrant',
-            private_key: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1/.vagrant/machines/default/virtualbox/private_key',
+            private_key: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1/.vagrant/machines/default/virtualbox/private_key'
         }]);
     });
 });

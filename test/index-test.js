@@ -80,7 +80,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.status();
         });
-        it('should test vagrant sshStatus', function (done) {
+        it('should test vagrant ssh config', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
