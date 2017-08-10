@@ -30,4 +30,21 @@ describe('test parsers', function () {
             expect(mach_stats['rethinkDB'].provider).to.equal('virtualbox');
         });
     });
+    it('should test global status parser', function () {
+        var data = fs.readFileSync(__dirname + '/data/global-status.txt').toString();
+        var res = parsers.globalStatusParser(data);
+        expect(res).to.deep.equal([{
+            id: 'baa72b8',
+            name: 'default',
+            provider: 'virtualbox',
+            state: 'saved',
+            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/example',
+        }, {
+            id: '454ace7',
+            name: 'default',
+            provider: 'virtualbox',
+            state: 'poweroff',
+            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1',
+        }]);
+    });
 });
