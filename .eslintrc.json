@@ -1,7 +1,7 @@
 {
     "env": {
         "node": true,
-        "es6": true
+        "es6": false
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -13,39 +13,63 @@
         "afterEach": true
     },
     "rules": {
+        // indent 4 spaces
         "indent": [
-            "error",
-            4
+            2,
+            4,
+            {
+                "SwitchCase": 1
+            }
         ],
-        "linebreak-style": "off",
+        // use unix lf - and warn if not
+        "linebreak-style": [
+            1,
+            "unix"
+        ],
+        // prefer single quote
         "quotes": [
-            "error",
+            1,
             "single"
         ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        // prefer semi-colon at the end of the line
+        "semi": 1,
+        // prefer comma at the end of the line in objects, arrays, etc
         "comma-dangle": [
-            "error",
+            1,
             "only-multiline"
         ],
+        // if then else on new lines
         "brace-style": [
             "error",
             "1tbs"
         ],
+        // prefer spaces around the keywords
         "keyword-spacing": [
-            "error",
-            { "before": true }
+            1
         ],
+        // don't disallow console statements
         "no-console": "off",
-        "curly": [
-            "error",
-            "all"
+        // enforce curly braces
+        "curly": 2,
+        // prefer comments with space
+        "spaced-comment": 1,
+        // don't disallow var keyword
+        "no-var": 0,
+        // warn on capitalized function names
+        "new-cap": 1,
+        // space before blocks mandatory
+        "space-before-blocks": 2,
+        // prefer space before function param parenthisis only when anonymous
+        "space-before-function-paren": [
+            1,
+            {
+                "anonymous": "always",
+                "named": "never"
+            }
         ],
-        "spaced-comment": [
-            "error",
-            "always"
-        ]
+        // require end-of-file newline
+        "eol-last": 2,
+        // warn unnecessary escapes
+        "no-useless-escape": 1
     }
 }
