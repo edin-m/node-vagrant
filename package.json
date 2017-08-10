@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "example": "cd example && node example.js",
-    "test": "node ./node_modules/mocha/bin/mocha test"
+    "test": "node ./node_modules/mocha/bin/mocha test",
+    "lint": "eslint src/ test/ index.js parseStatus.js provisioners.js"
   },
   "author": {
     "name": "Edin Mujagic"
