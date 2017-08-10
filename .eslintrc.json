@@ -70,6 +70,8 @@
         // require end-of-file newline
         "eol-last": 2,
         // warn unnecessary escapes
-        "no-useless-escape": 1
+        "no-useless-escape": 1,
+        // disallow padding within blocks
+        "padded-blocks": [2, "never"]
     }
 }

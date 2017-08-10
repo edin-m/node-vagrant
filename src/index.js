@@ -103,7 +103,6 @@ function run(command, opts, cb) {
 
 
 Machine.prototype._run = function (command, cb) {
-
     var self = this;
     if (self._runningCommand) {
         self.batch.push({command: command, cb: cb});
@@ -116,7 +115,7 @@ Machine.prototype._run = function (command, cb) {
     // var err = '';
     var child = run(command, {
         cwd: self.opts.cwd,
-        env: self.opts.env,
+        env: self.opts.env
     }, function (err, data) {
         self._runningCommand = false;
         var next = self.batch.pop();
@@ -324,15 +323,12 @@ Machine.prototype.snapshots = function () {
         },
         save: function (args, cb) {
             self._generic('snapshot save', args, cb);
-
         },
         restore: function (args, cb) {
             self._generic('snapshot restore', args, cb);
-
         },
         list: function (cb) {
             self._generic('snapshot', 'list', cb);
-
         },
         delete: function (args, cb) {
             self._generic('snapshot delete', args, cb);

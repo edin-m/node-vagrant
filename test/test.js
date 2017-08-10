@@ -196,5 +196,4 @@ describe('it should test node-vagrant', function () {
             done();
         });
     });
-
 });
