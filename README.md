@@ -5,6 +5,8 @@ This is light wrapper around vagrant CLI.
 It uses spawn process, and every command requiring user input
 such as init and destroy is created with switch --force or -f.
 
+[![Build Status](https://travis-ci.org/edin-m/node-vagrant.svg?branch=master)](https://travis-ci.org/edin-m/node-vagrant)
+
 Installation
 ===
 
