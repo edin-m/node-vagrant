@@ -1,5 +1,15 @@
+var _ = require('lodash');
+
 var MATCHERS = {
     download: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i
+};
+
+var SSH_CONFIG_MATCHERS = {
+    host: /Host (\S+)$/mi,
+    port: /Port (\S+)$/mi,
+    hostname: /HostName (\S+)$/mi,
+    user: /User (\S+)$/mi,
+    private_key: /IdentityFile (\S+)$/mi,
 };
 
 /**
@@ -80,8 +90,26 @@ function globalStatusParser(data) {
 /**
  *
  */
+function sshConfigParser(out) {
+    return out.split('\n\n')
+        .filter(function (out) {
+            return !_.isEmpty(out);
+        })
+        .map(function (out) {
+            var config = {};
+            for (var key in SSH_CONFIG_MATCHERS) {
+                config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
+            }
+            return config;
+        });
+}
+
+/**
+ *
+ */
 module.exports = {
     downloadStatusParser: downloadStatusParser,
     statusParser: statusParser,
-    globalStatusParser: globalStatusParser
+    globalStatusParser: globalStatusParser,
+    sshConfigParser: sshConfigParser
 };

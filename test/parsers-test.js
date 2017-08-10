@@ -38,13 +38,24 @@ describe('test parsers', function () {
             name: 'default',
             provider: 'virtualbox',
             state: 'saved',
-            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/example',
+            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/example'
         }, {
             id: '454ace7',
             name: 'default',
             provider: 'virtualbox',
             state: 'poweroff',
-            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1',
+            cwd: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1'
+        }]);
+    });
+    it('should test sshConfig parser', function () {
+        var data = fs.readFileSync(__dirname + '/data/ssh-config.txt').toString();
+        var res = parsers.sshConfigParser(data);
+        expect(res).to.deep.equal([{
+            host: 'default',
+            port: '2222',
+            hostname: '127.0.0.1',
+            user: 'vagrant',
+            private_key: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1/.vagrant/machines/default/virtualbox/private_key',
         }]);
     });
 });
