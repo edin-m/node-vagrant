@@ -57,6 +57,8 @@
         "no-var": 0,
         // warn on capitalized function names
         "new-cap": 1,
+        // space before blocks mandatory
+        "space-before-blocks": 2,
         // prefer space before function param parenthisis only when anonymous
         "space-before-function-paren": [
             1,

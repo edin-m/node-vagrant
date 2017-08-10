@@ -8,15 +8,15 @@ var _ = require('lodash');
  * Split on newlines, trim lines and filter out empty lines
  */
 function trimAndRemoveEmpty(result) {
-    return result.split(/\n|\r/).map(function(item) {
+    return result.split(/\n|\r/).map(function (item) {
         return item.trim();
-    }).filter(function(item) {
+    }).filter(function (item) {
         return item.length > 0;
     });
 }
 
-describe('Test provisioner adapters', function() {
-    it('Generic name value adapter', function(done) {
+describe('Test provisioner adapters', function () {
+    it('Generic name value adapter', function (done) {
         var provisionerConfig = {
             name: 'wtf',
             config: {
@@ -29,7 +29,7 @@ describe('Test provisioner adapters', function() {
         expect(lines.length).to.equal(2);
         done();
     });
-    it('Commands provisioner adapter', function(done) {
+    it('Commands provisioner adapter', function (done) {
         var provisionerConfig = {
             name: 'docker1',
             config: {
@@ -48,7 +48,7 @@ describe('Test provisioner adapters', function() {
         }
         done();
     });
-    it('Docker adapter commands', function(done) {
+    it('Docker adapter commands', function (done) {
         var provisionerConfig = {
             name: 'docker1',
             type: 'docker',
@@ -71,7 +71,7 @@ describe('Test provisioner adapters', function() {
         }
         done();
     });
-    it('Registering custom adapter', function(done) {
+    it('Registering custom adapter', function (done) {
         /**
          * Custom adapter must implement createTemplate() which receives provisionerConfig
          */

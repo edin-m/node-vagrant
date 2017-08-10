@@ -82,19 +82,18 @@ function run(command, opts, cb) {
         var out = '';
         var err = '';
 
-        child.stdout.on('data', function(data) {
+        child.stdout.on('data', function (data) {
             out += data;
         });
 
-        child.stderr.on('data', function(data) {
+        child.stderr.on('data', function (data) {
             err += data;
         });
 
-        child.on('close', function(code) {
+        child.on('close', function (code) {
             if (code !== 0) {
                 return cb(err);
             }
-
             return cb(null, out);
         });
     }
@@ -103,7 +102,7 @@ function run(command, opts, cb) {
 }
 
 
-Machine.prototype._run = function(command, cb) {
+Machine.prototype._run = function (command, cb) {
 
     var self = this;
     if (self._runningCommand) {
@@ -118,7 +117,7 @@ Machine.prototype._run = function(command, cb) {
     var child = run(command, {
         cwd: self.opts.cwd,
         env: self.opts.env,
-    }, function(err, data) {
+    }, function (err, data) {
         self._runningCommand = false;
         var next = self.batch.pop();
         if (next) {
@@ -133,18 +132,18 @@ Machine.prototype._run = function(command, cb) {
     return child;
 };
 
-Machine.prototype.sshConfig = function(cb) {
+Machine.prototype.sshConfig = function (cb) {
     var command = _command('ssh-config');
 
-    this._run(command, function(err, out) {
+    this._run(command, function (err, out) {
         if (err) {
             return cb(err);
         }
         var configs = out.split('\n\n')
-            .filter(function(out) {
+            .filter(function (out) {
                 return !_.isEmpty(out);
             })
-            .map(function(out) {
+            .map(function (out) {
                 var config = {};
                 for (var key in SSH_CONFIG_MATCHERS) {
                     config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
@@ -156,10 +155,10 @@ Machine.prototype.sshConfig = function(cb) {
     });
 };
 
-Machine.prototype.status = function(cb) {
+Machine.prototype.status = function (cb) {
     var command = _command('status');
 
-    this._run(command, function(err, out) {
+    this._run(command, function (err, out) {
         if (err) {
             return cb(err);
         }
@@ -170,14 +169,14 @@ Machine.prototype.status = function(cb) {
     });
 };
 
-Machine.prototype.up = function(args, cb) {
+Machine.prototype.up = function (args, cb) {
     cb = cb || args;
 
     var command = _command('up', args);
     var proc = this._run(command, cb);
 
     var self = this;
-    proc.stdout.on('data', function(buff) {
+    proc.stdout.on('data', function (buff) {
         var data = buff.toString();
 
         var res = data.match(MATCHERS.progress);
@@ -195,12 +194,12 @@ Machine.prototype.up = function(args, cb) {
     });
 };
 
-Machine.prototype._changeVagrantfile = function(config, cb) {
+Machine.prototype._changeVagrantfile = function (config, cb) {
     var self = this;
 
     var where = path.join(__dirname, 'templates/basic.tpl');
     var locVagrantfile = path.join(self.opts.cwd, 'Vagrantfile');
-    fs.readFile(where, function(err, data) {
+    fs.readFile(where, function (err, data) {
         if (err) {
             return cb(err);
         }
@@ -210,7 +209,7 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
         var compiled = _.template(data);
         var rendered = compiled(config);
 
-        fs.writeFile(locVagrantfile, rendered, function(err) {
+        fs.writeFile(locVagrantfile, rendered, function (err) {
             if (err) {
                 return cb(err);
             }
@@ -222,14 +221,14 @@ Machine.prototype._changeVagrantfile = function(config, cb) {
 /**
  * Transforms provisioner config to array and appends additional configuration
  */
-Machine.prototype._prepareProvisioners = function(config) {
+Machine.prototype._prepareProvisioners = function (config) {
     if (!config.provisioners) {
         config.provisioners = {};
     }
     if (_.isObject(config.provisioners) && !_.isArray(config.provisioners)) {
         // convert provisioners to array and add name and type
         var provisioners = config.provisioners;
-        config.provisioners = Object.keys(provisioners).reduce(function(prev, name) {
+        config.provisioners = Object.keys(provisioners).reduce(function (prev, name) {
             return prev.concat([{
                 name: name,
                 type: name,
@@ -238,15 +237,15 @@ Machine.prototype._prepareProvisioners = function(config) {
         }, []);
     }
     config.provisioners.forEach(function (provisioner) {
-        provisioner.templateLines = provisionerAdapters.createTemplate(provisioner).split(/\n|\r/).map(function(item) {
+        provisioner.templateLines = provisionerAdapters.createTemplate(provisioner).split(/\n|\r/).map(function (item) {
             return item.trim();
-        }).filter(function(item) {
+        }).filter(function (item) {
             return item.length > 0;
         });
     });
 };
 
-Machine.prototype.init = function(args, config, cb) {
+Machine.prototype.init = function (args, config, cb) {
     cb = cb || config;
     config = typeof config === 'object' ? config : {};
 
@@ -268,8 +267,8 @@ Machine.prototype.init = function(args, config, cb) {
     self._prepareProvisioners(config.config);
 
     if (!_.isEmpty(config)) {
-        this._run(command, function(err, res) {
-            self._changeVagrantfile(config, function(err) {
+        this._run(command, function (err, res) {
+            self._changeVagrantfile(config, function (err) {
                 if (err) {
                     return cb(err);
                 }
@@ -281,36 +280,36 @@ Machine.prototype.init = function(args, config, cb) {
     }
 };
 
-Machine.prototype.destroy = function(args, cb) {
+Machine.prototype.destroy = function (args, cb) {
     cb = cb || args;
 
     var command = _command('destroy', args, ['-f']);
     this._run(command, cb);
 };
 
-Machine.prototype.suspend = function(cb) {
+Machine.prototype.suspend = function (cb) {
     this._run(_command('suspend'), cb);
 };
 
-Machine.prototype.resume = function(cb) {
+Machine.prototype.resume = function (cb) {
     this._run(_command('resume'), cb);
 };
 
-Machine.prototype.halt = function(args, cb) {
+Machine.prototype.halt = function (args, cb) {
     cb = cb || args;
 
     var command = _command('halt', args, ['-f']);
     this._run(command, cb);
 };
 
-Machine.prototype.reload = function(args, cb) {
+Machine.prototype.reload = function (args, cb) {
     cb = cb || args;
 
     var command = _command('reload', args);
     this._run(command, cb);
 };
 
-Machine.prototype.provision = function(cb) {
+Machine.prototype.provision = function (cb) {
     this._run(_command('provision'), cb);
 };
 
@@ -341,22 +340,22 @@ Machine.prototype.snapshots = function () {
     };
 };
 
-Machine.prototype._generic = function(name, args, cb) {
+Machine.prototype._generic = function (name, args, cb) {
     this._run(_command(name, args), cb);
 };
 
 module.exports.Machine = Machine;
 
-module.exports.globalStatus = function(args, cb) {
+module.exports.globalStatus = function (args, cb) {
     cb = cb || args;
 
     var command = _command('global-status', args);
-    run(command, function(err, out) {
+    run(command, function (err, out) {
         if (err) {
             return cb(err);
         }
 
-        var lines = out.split('\n').slice(2).reduce(function(prev, curr) {
+        var lines = out.split('\n').slice(2).reduce(function (prev, curr) {
             if (prev.length > 0 && prev[prev.length - 1].length === 0) {
                 return prev;
             }
@@ -370,7 +369,7 @@ module.exports.globalStatus = function(args, cb) {
         }
 
         var re = /(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)/;
-        lines = lines.map(function(line) {
+        lines = lines.map(function (line) {
             var res = line.match(re);
             return {
                 id: res[1],
@@ -385,10 +384,10 @@ module.exports.globalStatus = function(args, cb) {
     });
 };
 
-module.exports.create = function(opts) {
+module.exports.create = function (opts) {
     return Machine(opts);
 };
 
-module.exports.version = function(cb) {
+module.exports.version = function (cb) {
     run(_command('version'), cb);
 };

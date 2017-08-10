@@ -10,7 +10,7 @@ var path = require('path');
 function CommandsAdapter() {
     var tplFile = fs.readFileSync(path.join(__dirname, 'templates/commands.tpl')).toString();
     var compiled = _.template(tplFile);
-    this.createTemplate = function(provisionerConfig) {
+    this.createTemplate = function (provisionerConfig) {
         return compiled({
             config: provisionerConfig,
             commands: provisionerConfig.config.commands
@@ -30,7 +30,7 @@ function NameValueAdapter() {
 
 module.exports = {
     _adapters: {},
-    createTemplate: function(provisionerConfig) {
+    createTemplate: function (provisionerConfig) {
         /**
          * There are two types of provisioner adapters: commands and name-value
          * Assume commands if there is .config.commands array
@@ -41,24 +41,24 @@ module.exports = {
         }
         return this._get(provisionerAdaterType).createTemplate(provisionerConfig);
     },
-    _get: function(type) {
+    _get: function (type) {
         if (!this._adapters[type]) {
             this._adapters[type] = this._createBuiltInAdapter(type);
         }
         return this._adapters[type];
     },
     _createBuiltInAdapter: function (type) {
-        if (type == 'commands') {
+        if (type === 'commands') {
             return new CommandsAdapter();
         }
         return new NameValueAdapter();
     },
-    removeAdapter: function(type) {
+    removeAdapter: function (type) {
         if (type in this._adapters) {
             delete this._adapters[type];
         }
     },
-    addAdapter: function(type, adapter, force) {
+    addAdapter: function (type, adapter, force) {
         force = force || false;
         if (force) {
             this._adapters[type] = adapter;
@@ -70,4 +70,3 @@ module.exports = {
         this._adapters[type] = adapter;
     }
 };
-

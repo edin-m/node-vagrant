@@ -6,18 +6,18 @@ var expect = require('chai').expect;
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 /* eslint quotes: "off" */
 
-describe('it should test node-vagrant', function() {
+describe('it should test node-vagrant', function () {
     var machine;
 
-    before(function(done) {
+    before(function (done) {
         machine = vagrant.create({ cwd: __dirname });
         done();
     });
 
-    it('should test creation of example1 Vagrantfile', function(done) {
+    it('should test creation of example1 Vagrantfile', function (done) {
         this.timeout(20000);
         var config = require('./example1.config.json');
-        machine.init('ubuntu/trusty64', config, function(err, out) {
+        machine.init('ubuntu/trusty64', config, function (err, out) {
             expect(err).to.not.exist;
 
             machine.isInitialized = true;
@@ -36,10 +36,10 @@ describe('it should test node-vagrant', function() {
         });
     });
 
-    it('should test creation of example2 Vagranfile', function(done) {
+    it('should test creation of example2 Vagranfile', function (done) {
         this.timeout(20000);
         var config = require('./example2.config.json');
-        machine.init('ubuntu/trusty64', config, function(err, out) {
+        machine.init('ubuntu/trusty64', config, function (err, out) {
             expect(err).to.not.exist;
 
             machine.isInitialized = true;
@@ -58,15 +58,15 @@ describe('it should test node-vagrant', function() {
         });
     });
 
-    describe('should test vagrant commands', function() {
+    describe('should test vagrant commands', function () {
         // mock _mainRun as to call a callback within tests
         var runFuncBefore;
-        before(function(done) {
+        before(function (done) {
             runFuncBefore = machine._run;
             done();
         });
-        it('should test vagrant init', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant init', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(3);
                 expect(command[0]).to.equal('init');
@@ -74,20 +74,20 @@ describe('it should test node-vagrant', function() {
                 expect(command[2]).to.equal('-f');
                 done();
             };
-            machine.init('ubuntu/trusty64', { }, function() { });
+            machine.init('ubuntu/trusty64', { }, function () { });
         });
-        it('should test vagrant up', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant up', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('up');
                 done();
-                return { stdout: { on: function() { } }, stderr: { } };
+                return { stdout: { on: function () { } }, stderr: { } };
             };
             machine.up();
         });
-        it('should test vagrant status', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant status', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('status');
@@ -95,8 +95,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.status();
         });
-        it('should test vagrant sshStatus', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant sshStatus', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('ssh-config');
@@ -104,8 +104,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.sshConfig();
         });
-        it('should test vagrant suspend', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant suspend', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('suspend');
@@ -113,8 +113,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.suspend();
         });
-        it('should test vagrant resume', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant resume', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('resume');
@@ -122,8 +122,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.resume();
         });
-        it('should test vagrant halt', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant halt', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
                 expect(command[0]).to.equal('halt');
@@ -132,8 +132,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.halt();
         });
-        it('should test vagrant destroy', function(done) {
-            machine._run = function(command) {
+        it('should test vagrant destroy', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
                 expect(command[0]).to.equal('destroy');
@@ -142,8 +142,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.destroy();
         });
-        it('should test snapshots() push()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() push()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
                 expect(command[0]).to.equal('snapshot');
@@ -152,8 +152,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().push();
         });
-        it('should test snapshots() pop()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() pop()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
                 expect(command[0]).to.equal('snapshot');
@@ -162,8 +162,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().pop();
         });
-        it('should test snapshots() save()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() save()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('snapshot save');
@@ -171,8 +171,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().save();
         });
-        it('should test snapshots() delete()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() delete()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('snapshot delete');
@@ -180,8 +180,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().delete();
         });
-        it('should test snapshots() restore()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() restore()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
                 expect(command[0]).to.equal('snapshot restore');
@@ -189,8 +189,8 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().restore();
         });
-        it('should test snapshots() list()', function(done) {
-            machine._run = function(command) {
+        it('should test snapshots() list()', function (done) {
+            machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
                 expect(command[0]).to.equal('snapshot');
@@ -199,13 +199,13 @@ describe('it should test node-vagrant', function() {
             };
             machine.snapshots().list();
         });
-        after(function(done) {
+        after(function (done) {
             machine._run = runFuncBefore;
             done();
         });
     });
 
-    it('should prepare provisioners from object config to array config', function(done) {
+    it('should prepare provisioners from object config to array config', function (done) {
         var config = {
             config: {
                 provisioners: {
@@ -241,19 +241,19 @@ describe('it should test node-vagrant', function() {
         done();
     });
 
-    after(function(done) {
+    after(function (done) {
         this.timeout(20000);
         var filesToUnlink = [
             path.join(__dirname, 'out.example1.Vagrantfile'),
             path.join(__dirname, './out.example2.Vagrantfile')
         ];
-        filesToUnlink.forEach(function(filename) {
+        filesToUnlink.forEach(function (filename) {
             if (fs.existsSync(filename)) {
                 // comment out this line to be able to see output example Vagrantfiles
                 fs.unlinkSync(filename);
             }
         });
-        machine.destroy(function(err, res) {
+        machine.destroy(function (err, res) {
             expect(err).to.not.exist;
             done();
         });
