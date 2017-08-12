@@ -1,0 +1,11 @@
+id       name    provider   state    directory
+--------------------------------------------------------------------------------------------
+baa72b8  default virtualbox saved    /Users/edin-m/node-vagrant/edin-m/node-vagrant/example
+454ace7  default virtualbox poweroff /Users/edin-m/node-vagrant/edin-m/node-vagrant/del1
+
+The above shows information about all known Vagrant environments
+on this machine. This data is cached and may not be completely
+up-to-date. To interact with any of the machines, you can go to
+that directory and run Vagrant, or you can use the ID directly
+with Vagrant commands from any directory. For example:
+"vagrant destroy 1a2b3c4d"

@@ -6,22 +6,9 @@ var path = require('path');
 var _ = require('lodash');
 var fs = require('fs');
 var provisionerAdapters = require('./provisioners');
-var statusParser = require('./parseStatus');
+var parsers = require('./parsers');
 
 var vagrant = process.env.VAGRANT_DIR ? path.join(process.env.VAGRANT_DIR, 'vagrant') : 'vagrant';
-
-var SSH_CONFIG_MATCHERS = {
-    host: /Host (\S+)$/mi,
-    port: /Port (\S+)$/mi,
-    hostname: /HostName (\S+)$/mi,
-    user: /User (\S+)$/mi,
-    private_key: /IdentityFile (\S+)$/mi,
-};
-
-var MATCHERS = {
-    progress: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i,
-    Downloading: 'Downloading'
-};
 
 function Machine(opts) {
     opts = opts || {};
@@ -103,10 +90,9 @@ function run(command, opts, cb) {
 
 
 Machine.prototype._run = function (command, cb) {
-
     var self = this;
     if (self._runningCommand) {
-        self.batch.push({command: command, cb: cb});
+        self.batch.push({ command: command, cb: cb });
         return;
     }
 
@@ -116,7 +102,7 @@ Machine.prototype._run = function (command, cb) {
     // var err = '';
     var child = run(command, {
         cwd: self.opts.cwd,
-        env: self.opts.env,
+        env: self.opts.env
     }, function (err, data) {
         self._runningCommand = false;
         var next = self.batch.pop();
@@ -139,18 +125,7 @@ Machine.prototype.sshConfig = function (cb) {
         if (err) {
             return cb(err);
         }
-        var configs = out.split('\n\n')
-            .filter(function (out) {
-                return !_.isEmpty(out);
-            })
-            .map(function (out) {
-                var config = {};
-                for (var key in SSH_CONFIG_MATCHERS) {
-                    config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
-                }
-                return config;
-            });
-
+        var configs = parsers.sshConfigParser(out);
         cb(null, configs);
     });
 };
@@ -162,9 +137,7 @@ Machine.prototype.status = function (cb) {
         if (err) {
             return cb(err);
         }
-
-        var statuses = statusParser(out);
-
+        var statuses = parsers.statusParser(out);
         cb(null, statuses);
     });
 };
@@ -179,17 +152,11 @@ Machine.prototype.up = function (args, cb) {
     proc.stdout.on('data', function (buff) {
         var data = buff.toString();
 
-        var res = data.match(MATCHERS.progress);
-
         self.emit('up-progress', data);
 
+        var res = parsers.downloadStatusParser(data);
         if (res) {
-            var machine = res[1];
-            var progress = res[2];
-            var rate = res[3];
-            var remaining = res[4];
-
-            self.emit('progress', machine, progress, rate, remaining);
+            self.emit('progress', res.machine, res.progress, res.rate, res.remaining);
         }
     });
 };
@@ -324,15 +291,12 @@ Machine.prototype.snapshots = function () {
         },
         save: function (args, cb) {
             self._generic('snapshot save', args, cb);
-
         },
         restore: function (args, cb) {
             self._generic('snapshot restore', args, cb);
-
         },
         list: function (cb) {
             self._generic('snapshot', 'list', cb);
-
         },
         delete: function (args, cb) {
             self._generic('snapshot delete', args, cb);
@@ -354,32 +318,7 @@ module.exports.globalStatus = function (args, cb) {
         if (err) {
             return cb(err);
         }
-
-        var lines = out.split('\n').slice(2).reduce(function (prev, curr) {
-            if (prev.length > 0 && prev[prev.length - 1].length === 0) {
-                return prev;
-            }
-            prev.push(curr.trim());
-            return prev;
-        }, []);
-
-        lines.pop();
-        if (/no active Vagrant environments/.test(lines[0])) {
-            lines = [];
-        }
-
-        var re = /(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)/;
-        lines = lines.map(function (line) {
-            var res = line.match(re);
-            return {
-                id: res[1],
-                name: res[2],
-                provider: res[3],
-                state: res[4],
-                cwd: res[5]
-            };
-        });
-
+        var lines = parsers.globalStatusParser(out);
         cb(null, lines);
     });
 };

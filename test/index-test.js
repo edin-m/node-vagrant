@@ -1,4 +1,6 @@
+var EventEmitter = require('events').EventEmitter;
 var expect = require('chai').expect;
+var sinon = require('sinon');
 
 var vagrant = require('../index');
 
@@ -41,6 +43,34 @@ describe('it should test node-vagrant', function () {
             };
             machine.up();
         });
+        it('should test vagrant up emit progress', function (done) {
+            var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
+            var ee = new EventEmitter;
+            var spy = sinon.spy();
+            machine._run = function (command) {
+                return { stdout: ee, stderr: { } };
+            };
+            machine.once('up-progress', spy);
+            machine.up();
+            ee.emit('data', dataStr);
+            expect(spy.calledOnce).to.equal(true);
+            expect(spy.getCall(0).args[0]).to.equal(dataStr);
+            done();
+        });
+        it('should test vagrant up emit up-progress', function (done) {
+            var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
+            var ee = new EventEmitter;
+            var spy = sinon.spy();
+            machine._run = function (command) {
+                return { stdout: ee, stderr: { } };
+            };
+            machine.once('progress', spy);
+            machine.up();
+            ee.emit('data', dataStr);
+            expect(spy.calledOnce).to.equal(true);
+            expect(spy.getCall(0).args).to.deep.equal(['default', '97', '899k/s', '0:00:24']);
+            done();
+        });
         it('should test vagrant status', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
@@ -50,7 +80,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.status();
         });
-        it('should test vagrant sshStatus', function (done) {
+        it('should test vagrant ssh config', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -196,5 +226,4 @@ describe('it should test node-vagrant', function () {
             done();
         });
     });
-
 });

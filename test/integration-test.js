@@ -63,6 +63,7 @@ describe('it should test node-vagrant', function () {
     });
 
     it('should destroy machine', function (done) {
+        this.timeout(10000);
         machine.destroy(function (err, res) {
             expect(err).to.not.exist;
             done();
@@ -83,5 +84,4 @@ describe('it should test node-vagrant', function () {
             done();
         });
     });
-
 });
