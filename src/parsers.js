@@ -12,6 +12,12 @@ var SSH_CONFIG_MATCHERS = {
     private_key: /IdentityFile (\S+)$/mi,
 };
 
+var BOX_LIST_MATCHERS = {
+    name: /^.*?(?=\s)/,
+    provider: /[^(]+(?=,)/,
+    version: /\S+(?=\))/,
+};
+
 /**
  *
  */
@@ -107,9 +113,57 @@ function sshConfigParser(out) {
 /**
  *
  */
+function boxListParser(out) {
+    return out.split('\n')
+        .filter(function (out) {
+            return !_.isEmpty(out);
+        })
+        .map(function (out) {
+            var box = {};
+            for (var key in BOX_LIST_MATCHERS) {
+                box[key] = out.match(BOX_LIST_MATCHERS[key])[0];
+            }
+            return box;
+        });
+}
+/**
+ *
+ */
+function boxListOutdatedParser(out) {
+    return out.split('\n')
+        .filter(function (out) {
+            return !_.isEmpty(out);
+        })
+        .map(function (out) {
+            var box = {};
+
+            box.name = out.match(/[^'*\s]+(?=')/)[0];
+
+            if (out.includes('is up to date')) {
+                box.status = 'up to date';
+                box.currentVersion = out.match(/[^(]+(?=\))/)[0];
+                box.latestVersion = out.match(/[^(]+(?=\))/)[0];
+            } else if (out.includes('is outdated!')) {
+                box.status = 'out of date';
+                box.currentVersion = (out.match(/(Current: ).+(?=. L)/)[0]).split(/\s/)[1];
+                box.latestVersion = (out.match(/(Latest: ).+/)[0]).split(/\s/)[1];
+            } else {
+                box.status = 'unknown';
+                box.currentVersion = null;
+                box.latestVersion = null;
+            }
+            return box;
+        });
+}
+
+/**
+ *
+ */
 module.exports = {
     downloadStatusParser: downloadStatusParser,
     statusParser: statusParser,
     globalStatusParser: globalStatusParser,
-    sshConfigParser: sshConfigParser
+    sshConfigParser: sshConfigParser,
+    boxListParser: boxListParser,
+    boxListOutdatedParser: boxListOutdatedParser
 };
