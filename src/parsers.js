@@ -139,11 +139,11 @@ function boxListOutdatedParser(out) {
 
             box.name = out.match(/[^'*\s]+(?=')/)[0];
 
-            if (out.includes('is up to date')) {
+            if (out.match(/is up to date/)) {
                 box.status = 'up to date';
                 box.currentVersion = out.match(/[^(]+(?=\))/)[0];
                 box.latestVersion = out.match(/[^(]+(?=\))/)[0];
-            } else if (out.includes('is outdated!')) {
+            } else if (out.match(/is outdated!/)) {
                 box.status = 'out of date';
                 box.currentVersion = (out.match(/(Current: ).+(?=. L)/)[0]).split(/\s/)[1];
                 box.latestVersion = (out.match(/(Latest: ).+/)[0]).split(/\s/)[1];
