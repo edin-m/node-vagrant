@@ -309,13 +309,13 @@ Machine.prototype.snapshots = function () {
 
 Machine.prototype.boxRepackage = function (name, provider, version, cb) {
     if (typeof name !== 'string') {
-        cb('name must be provided as a string');
+        return cb('name must be provided as a string');
     }
     if (typeof provider !== 'string') {
-        cb('provider must be provided as a string');
+        return cb('provider must be provided as a string');
     }
     if (typeof version !== 'string') {
-        cb('version must be provided as a string');
+        return cb('version must be provided as a string');
     }
 
     var command = _command(['box', 'repackage', name, provider, version]);
@@ -351,7 +351,7 @@ module.exports.version = function (cb) {
 
 module.exports.boxAdd = function (box, args, cb) {
     if (typeof box !== 'string' && cb) {
-        cb('box must be provided as a string');
+        return cb('box must be provided as a string');
     }
     cb = cb || args;
 
@@ -398,7 +398,7 @@ module.exports.boxPrune = function (args, cb) {
 
 module.exports.boxRemove = function (name, args, cb) {
     if (typeof name !== 'string' && cb) {
-        cb('name must be provided as a string');
+        return cb('name must be provided as a string');
     }
 
     cb = cb || args;
@@ -410,10 +410,12 @@ module.exports.boxRemove = function (name, args, cb) {
 module.exports.boxUpdate = function (box, provider, cb) {
     if (typeof box !== 'string' && cb) {
         cb('box must be provided as a string');
+        return new EventEmitter;
     }
 
     if (typeof provider !== 'string' && cb) {
         cb('provider must be provided as a string');
+        return new EventEmitter;
     }
 
     var command = _command(['box', 'update', '--box', box, '--provider', provider]);
