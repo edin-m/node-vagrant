@@ -104,7 +104,15 @@ function sshConfigParser(out) {
         .map(function (out) {
             var config = {};
             for (var key in SSH_CONFIG_MATCHERS) {
-                config[key] = out.match(SSH_CONFIG_MATCHERS[key])[1];
+                var match = out.match(SSH_CONFIG_MATCHERS[key]);
+                if (match) {
+                    config[key] = match[1];
+                } else {
+                    config[key] = null;
+                    if (process.env.NODE_DEBUG) {
+                        console.warn('warning ssh-config could not parse key', key);
+                    }
+                }
             }
             return config;
         });

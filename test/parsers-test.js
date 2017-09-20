@@ -58,6 +58,17 @@ describe('test parsers', function () {
             private_key: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1/.vagrant/machines/default/virtualbox/private_key'
         }]);
     });
+    it('should test sshConfig parser', function () {
+        var data = fs.readFileSync(__dirname + '/data/ssh-config-nokey.txt').toString();
+        var res = parsers.sshConfigParser(data);
+        expect(res).to.deep.equal([{
+            host: 'default',
+            port: '2222',
+            hostname: '127.0.0.1',
+            user: 'vagrant',
+            private_key: null
+        }]);
+    });
     it('should test box list parser', function () {
         var data = fs.readFileSync(__dirname + '/data/boxes.txt').toString();
         var res = parsers.boxListParser(data);
