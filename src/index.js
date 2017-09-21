@@ -18,7 +18,7 @@ function Machine(opts) {
     }
 
     this.batch = [];
-    
+
     this.opts = opts;
     this.opts.cwd = this.opts.cwd || process.cwd();
     this.opts.env = this.opts.env || process.env;
@@ -39,10 +39,14 @@ function _command(name, args, more) {
 
     args = args.concat(more);
 
-    return [name].concat(args);
+    if (!Array.isArray(name)) {
+        name = [name];
+    }
+
+    return name.concat(args);
 }
 
-function run(command, opts, cb) {
+module.exports._run = function (command, opts, cb) {
     var args = [].slice.call(arguments);
 
     if (args.length === 1) {
@@ -86,8 +90,7 @@ function run(command, opts, cb) {
     }
 
     return child;
-}
-
+};
 
 Machine.prototype._run = function (command, cb) {
     var self = this;
@@ -100,7 +103,7 @@ Machine.prototype._run = function (command, cb) {
 
     // var out = '';
     // var err = '';
-    var child = run(command, {
+    var child = module.exports._run(command, {
         cwd: self.opts.cwd,
         env: self.opts.env
     }, function (err, data) {
@@ -304,6 +307,21 @@ Machine.prototype.snapshots = function () {
     };
 };
 
+Machine.prototype.boxRepackage = function (name, provider, version, cb) {
+    if (typeof name !== 'string') {
+        return cb('name must be provided as a string');
+    }
+    if (typeof provider !== 'string') {
+        return cb('provider must be provided as a string');
+    }
+    if (typeof version !== 'string') {
+        return cb('version must be provided as a string');
+    }
+
+    var command = _command(['box', 'repackage', name, provider, version]);
+    this._run(command, cb);
+};
+
 Machine.prototype._generic = function (name, args, cb) {
     this._run(_command(name, args), cb);
 };
@@ -314,7 +332,7 @@ module.exports.globalStatus = function (args, cb) {
     cb = cb || args;
 
     var command = _command('global-status', args);
-    run(command, function (err, out) {
+    module.exports._run(command, function (err, out) {
         if (err) {
             return cb(err);
         }
@@ -328,5 +346,89 @@ module.exports.create = function (opts) {
 };
 
 module.exports.version = function (cb) {
-    run(_command('version'), cb);
+    module.exports._run(_command('version'), cb);
+};
+
+module.exports.boxAdd = function (box, args, cb) {
+    if (typeof box !== 'string' && cb) {
+        return cb('box must be provided as a string');
+    }
+    cb = cb || args;
+
+    var command = _command(['box', 'add', '-f'], args, box);
+    var proc = module.exports._run(command, cb);
+
+    var emitter = new EventEmitter;
+    proc.stdout.on('data', function (buff) {
+        var data = buff.toString();
+
+        var res = parsers.downloadStatusParser(data);
+        if (res) {
+            emitter.emit('progress', res.machine, res.progress, res.rate, res.remaining);
+        }
+    });
+    return emitter;
+};
+
+module.exports.boxList = function (args, cb) {
+    cb = cb || args;
+
+    var command = _command(['box', 'list'], args);
+    module.exports._run(command, function (err, out) {
+        if (err) {
+            return cb(err);
+        }
+        cb(null, parsers.boxListParser(out));
+    });
+};
+
+module.exports.boxOutdated = function (args, cb) {
+    cb = cb || args;
+
+    var command = _command(['box', 'outdated', '--global'], args);
+    module.exports._run(command, cb);
+};
+
+module.exports.boxPrune = function (args, cb) {
+    cb = cb || args;
+
+    var command = _command(['box', 'prune', '-f'], args);
+    module.exports._run(command, cb);
+};
+
+module.exports.boxRemove = function (name, args, cb) {
+    if (typeof name !== 'string' && cb) {
+        return cb('name must be provided as a string');
+    }
+
+    cb = cb || args;
+
+    var command = _command(['box', 'remove', '-f'], args, name);
+    module.exports._run(command, cb);
+};
+
+module.exports.boxUpdate = function (box, provider, cb) {
+    if (typeof box !== 'string' && cb) {
+        cb('box must be provided as a string');
+        return new EventEmitter;
+    }
+
+    if (typeof provider !== 'string' && cb) {
+        cb('provider must be provided as a string');
+        return new EventEmitter;
+    }
+
+    var command = _command(['box', 'update', '--box', box, '--provider', provider]);
+    var proc = module.exports._run(command, cb);
+
+    var emitter = new EventEmitter;
+    proc.stdout.on('data', function (buff) {
+        var data = buff.toString();
+
+        var res = parsers.downloadStatusParser(data);
+        if (res) {
+            emitter.emit('progress', res.machine, res.progress, res.rate, res.remaining);
+        }
+    });
+    return emitter;
 };

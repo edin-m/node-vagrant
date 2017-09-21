@@ -58,4 +58,37 @@ describe('test parsers', function () {
             private_key: '/Users/edin-m/node-vagrant/edin-m/node-vagrant/del1/.vagrant/machines/default/virtualbox/private_key'
         }]);
     });
+    it('should test box list parser', function () {
+        var data = fs.readFileSync(__dirname + '/data/boxes.txt').toString();
+        var res = parsers.boxListParser(data);
+        expect(res).to.deep.equal([{
+            name: 'my_box',
+            provider: 'virtualbox',
+            version: '0',
+        }, {
+            name: 'ubuntu/trusty64',
+            provider: 'virtualbox',
+            version: '20170818.0.0',
+        }]);
+    });
+    it('should test box outdated parser', function () {
+        var data = fs.readFileSync(__dirname + '/data/box-outdated.txt').toString();
+        var res = parsers.boxListOutdatedParser(data);
+        expect(res).to.deep.equal([{
+            name: 'ubuntu/trusty64',
+            status: 'up to date',
+            currentVersion: 'v20170818.0.0',
+            latestVersion: 'v20170818.0.0'
+        }, {
+            name: 'my_box',
+            status: 'unknown',
+            currentVersion: null,
+            latestVersion: null
+        }, {
+            name: 'laravel/homestead',
+            status: 'out of date',
+            currentVersion: '2.2.0',
+            latestVersion: '3.0.0'
+        }]);
+    });
 });
