@@ -83,7 +83,7 @@ module.exports._run = function (command, opts, cb) {
 
         child.on('close', function (code) {
             if (code !== 0) {
-                return cb(err);
+                return cb(err, out);
             }
             return cb(null, out);
         });
