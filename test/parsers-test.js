@@ -20,14 +20,14 @@ describe('test parsers', function () {
         expect(result).to.equal(null);
     });
     describe('Vagrant status parsing', function () {
-        var exStats = fs.readFileSync('./test/status').toString();
         it('should parse all status information', function () {
-            var mach_stats = parsers.statusParser(exStats);
-            expect(Object.keys(mach_stats).length).to.equal(2);
-            expect(mach_stats['my_server'].status).to.equal('running');
-            expect(mach_stats['my_server'].provider).to.equal('docker');
-            expect(mach_stats['rethinkDB'].status).to.equal('not created');
-            expect(mach_stats['rethinkDB'].provider).to.equal('virtualbox');
+            var exStats = fs.readFileSync('./test/status').toString();
+            var machStats = parsers.statusParser(exStats);
+            expect(Object.keys(machStats).length).to.equal(2);
+            expect(machStats['my_server'].status).to.equal('running');
+            expect(machStats['my_server'].provider).to.equal('docker');
+            expect(machStats['rethinkDB'].status).to.equal('not created');
+            expect(machStats['rethinkDB'].provider).to.equal('virtualbox');
         });
     });
     it('should test global status parser', function () {

@@ -34,11 +34,22 @@ function downloadStatusParser(data) {
     return null;
 }
 
+function findArrayContainsStringIndex(str, array) {
+    for (var i = 0; i < array.length; i++) {
+        if (str.test(array[i])) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 /**
  *
  */
-function statusParser(status_text) {
-    var lines = status_text.split('\n').slice(2).reduce(function (prev, curr) {
+function statusParser(statusText) {
+    var lines = statusText.split('\n');
+    var startIndex = findArrayContainsStringIndex(/Current machine states/, lines);
+    lines = lines.slice(startIndex).slice(2).reduce(function (prev, curr) {
         if (prev.length > 0 && prev[prev.length - 1].length === 0) {
             return prev;
         }
