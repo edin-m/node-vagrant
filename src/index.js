@@ -26,7 +26,7 @@ function Machine(opts) {
 
 util.inherits(Machine, EventEmitter);
 
-function _command(name, args, more) {
+function buildCommand(name, args, more) {
     more = more || [];
 
     if (!args || (typeof args === 'function')) {
@@ -59,7 +59,7 @@ module.exports._run = function (command, opts, cb) {
     }
 
     if (!Array.isArray(command)) {
-        command = _command(command);
+        command = buildCommand(command);
     }
 
     if (process.env.NODE_DEBUG && !process.env.NODE_VAGRANT_DISABLE_DEBUG) {
@@ -122,7 +122,7 @@ Machine.prototype._run = function (command, cb) {
 };
 
 Machine.prototype.sshConfig = function (cb) {
-    var command = _command('ssh-config');
+    var command = buildCommand('ssh-config');
 
     this._run(command, function (err, out) {
         if (err) {
@@ -134,7 +134,7 @@ Machine.prototype.sshConfig = function (cb) {
 };
 
 Machine.prototype.status = function (cb) {
-    var command = _command('status');
+    var command = buildCommand('status');
 
     this._run(command, function (err, out) {
         if (err) {
@@ -148,7 +148,7 @@ Machine.prototype.status = function (cb) {
 Machine.prototype.up = function (args, cb) {
     cb = cb || args;
 
-    var command = _command('up', args);
+    var command = buildCommand('up', args);
     var proc = this._run(command, cb);
 
     var self = this;
@@ -219,7 +219,7 @@ Machine.prototype.init = function (args, config, cb) {
     cb = cb || config;
     config = typeof config === 'object' ? config : {};
 
-    var command = _command('init', args, ['-f']);
+    var command = buildCommand('init', args, ['-f']);
 
     var self = this;
 
@@ -253,34 +253,34 @@ Machine.prototype.init = function (args, config, cb) {
 Machine.prototype.destroy = function (args, cb) {
     cb = cb || args;
 
-    var command = _command('destroy', args, ['-f']);
+    var command = buildCommand('destroy', args, ['-f']);
     this._run(command, cb);
 };
 
 Machine.prototype.suspend = function (cb) {
-    this._run(_command('suspend'), cb);
+    this._run(buildCommand('suspend'), cb);
 };
 
 Machine.prototype.resume = function (cb) {
-    this._run(_command('resume'), cb);
+    this._run(buildCommand('resume'), cb);
 };
 
 Machine.prototype.halt = function (args, cb) {
     cb = cb || args;
 
-    var command = _command('halt', args, ['-f']);
+    var command = buildCommand('halt', args, ['-f']);
     this._run(command, cb);
 };
 
 Machine.prototype.reload = function (args, cb) {
     cb = cb || args;
 
-    var command = _command('reload', args);
+    var command = buildCommand('reload', args);
     this._run(command, cb);
 };
 
 Machine.prototype.provision = function (cb) {
-    this._run(_command('provision'), cb);
+    this._run(buildCommand('provision'), cb);
 };
 
 Machine.prototype.snapshots = function () {
@@ -318,12 +318,12 @@ Machine.prototype.boxRepackage = function (name, provider, version, cb) {
         return cb('version must be provided as a string');
     }
 
-    var command = _command(['box', 'repackage', name, provider, version]);
+    var command = buildCommand(['box', 'repackage', name, provider, version]);
     this._run(command, cb);
 };
 
 Machine.prototype._generic = function (name, args, cb) {
-    this._run(_command(name, args), cb);
+    this._run(buildCommand(name, args), cb);
 };
 
 module.exports.Machine = Machine;
@@ -331,7 +331,7 @@ module.exports.Machine = Machine;
 module.exports.globalStatus = function (args, cb) {
     cb = cb || args;
 
-    var command = _command('global-status', args);
+    var command = buildCommand('global-status', args);
     module.exports._run(command, function (err, out) {
         if (err) {
             return cb(err);
@@ -346,7 +346,7 @@ module.exports.create = function (opts) {
 };
 
 module.exports.version = function (cb) {
-    module.exports._run(_command('version'), cb);
+    module.exports._run(buildCommand('version'), cb);
 };
 
 module.exports.boxAdd = function (box, args, cb) {
@@ -355,7 +355,7 @@ module.exports.boxAdd = function (box, args, cb) {
     }
     cb = cb || args;
 
-    var command = _command(['box', 'add', '-f'], args, box);
+    var command = buildCommand(['box', 'add', '-f'], args, box);
     var proc = module.exports._run(command, cb);
 
     var emitter = new EventEmitter;
@@ -373,7 +373,7 @@ module.exports.boxAdd = function (box, args, cb) {
 module.exports.boxList = function (args, cb) {
     cb = cb || args;
 
-    var command = _command(['box', 'list'], args);
+    var command = buildCommand(['box', 'list'], args);
     module.exports._run(command, function (err, out) {
         if (err) {
             return cb(err);
@@ -385,14 +385,14 @@ module.exports.boxList = function (args, cb) {
 module.exports.boxOutdated = function (args, cb) {
     cb = cb || args;
 
-    var command = _command(['box', 'outdated', '--global'], args);
+    var command = buildCommand(['box', 'outdated', '--global'], args);
     module.exports._run(command, cb);
 };
 
 module.exports.boxPrune = function (args, cb) {
     cb = cb || args;
 
-    var command = _command(['box', 'prune', '-f'], args);
+    var command = buildCommand(['box', 'prune', '-f'], args);
     module.exports._run(command, cb);
 };
 
@@ -403,7 +403,7 @@ module.exports.boxRemove = function (name, args, cb) {
 
     cb = cb || args;
 
-    var command = _command(['box', 'remove', '-f'], args, name);
+    var command = buildCommand(['box', 'remove', '-f'], args, name);
     module.exports._run(command, cb);
 };
 
@@ -418,7 +418,7 @@ module.exports.boxUpdate = function (box, provider, cb) {
         return new EventEmitter;
     }
 
-    var command = _command(['box', 'update', '--box', box, '--provider', provider]);
+    var command = buildCommand(['box', 'update', '--box', box, '--provider', provider]);
     var proc = module.exports._run(command, cb);
 
     var emitter = new EventEmitter;
