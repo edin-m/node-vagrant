@@ -21,7 +21,7 @@ describe('test parsers', function () {
     });
     describe('Vagrant status parsing', function () {
         it('should parse all status information', function () {
-            var exStats = fs.readFileSync('./test/status').toString();
+            var exStats = fs.readFileSync(__dirname + '/data/status').toString();
             var machStats = parsers.statusParser(exStats);
             expect(Object.keys(machStats).length).to.equal(2);
             expect(machStats['my_server'].status).to.equal('running');
