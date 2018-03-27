@@ -176,6 +176,6 @@ TODO
 - more detail vagrant file settings
     - firewall
     - networking
-- boxing
-- ~~provisoning~~
-- ~~providers~~
+- [x] boxing
+- [x] provisoning
+- [x] providers
