@@ -1,8 +1,10 @@
 var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 
 var parsers = require('./parsers');
 var Command = require('./command');
 var Machine = require('./machine');
+var Common = require('./common');
 
 module.exports._run = Command.runCommand;
 
@@ -121,4 +123,21 @@ module.exports.boxUpdate = function (box, provider, cb) {
         }
     });
     return emitter;
+};
+
+module.exports.promisify = function () {
+    if (Common.isPromised()) {
+        Machine.promisify();
+        module.exports.globalStatus = util.promisify(module.exports.globalStatus);
+        module.exports.version = util.promisify(module.exports.version);
+        module.exports.versionStatus = util.promisify(module.exports.versionStatus);
+        module.exports.boxAdd = util.promisify(module.exports.boxAdd);
+        module.exports.boxList = util.promisify(module.exports.boxList);
+        module.exports.boxOutdated = util.promisify(module.exports.boxOutdated);
+        module.exports.boxPrune = util.promisify(module.exports.boxPrune);
+        module.exports.boxRemove = util.promisify(module.exports.boxRemove);
+        module.exports.boxUpdate = util.promisify(module.exports.boxUpdate);
+    } else {
+        console.error('No Promise top-level class found');
+    }
 };

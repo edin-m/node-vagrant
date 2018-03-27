@@ -7,6 +7,7 @@ var fs = require('fs');
 var provisionerAdapters = require('./provisioners');
 var parsers = require('./parsers');
 var Command = require('./command');
+var Common = require('./common');
 
 function Machine(opts) {
     opts = opts || {};
@@ -186,40 +187,34 @@ Machine.prototype.init = function (args, config, cb) {
 
 Machine.prototype.destroy = function (args, cb) {
     cb = cb || args;
-
-    var command = Command.buildCommand('destroy', args, ['-f']);
-    this._run(command, cb);
+    this._generic(['destroy', '-f'], args, cb);
 };
 
 Machine.prototype.suspend = function (cb) {
-    this._run(Command.buildCommand('suspend'), cb);
+    this._generic('suspend', [], cb);
 };
 
 Machine.prototype.resume = function (cb) {
-    this._run(Command.buildCommand('resume'), cb);
+    this._generic('resume', [], cb);
 };
 
 Machine.prototype.halt = function (args, cb) {
     cb = cb || args;
-
-    var command = Command.buildCommand('halt', args, ['-f']);
-    this._run(command, cb);
+    this._generic(['halt', '-f'], args, cb);
 };
 
 Machine.prototype.reload = function (args, cb) {
     cb = cb || args;
-
-    var command = Command.buildCommand('reload', args);
-    this._run(command, cb);
+    this._generic('reload', args, cb);
 };
 
 Machine.prototype.provision = function (cb) {
-    this._run(Command.buildCommand('provision'), cb);
+    this._generic('provision', [], cb);
 };
 
 Machine.prototype.snapshots = function () {
     var self = this;
-    return {
+    var snapshots = {
         push: function (cb) {
             self._generic('snapshot', 'push', cb);
         },
@@ -239,6 +234,15 @@ Machine.prototype.snapshots = function () {
             self._generic('snapshot delete', args, cb);
         }
     };
+    if (Common.isPromised()) {
+        snapshots.push = util.promisify(snapshots.push);
+        snapshots.pop = util.promisify(snapshots.pop);
+        snapshots.save = util.promisify(snapshots.save);
+        snapshots.restore = util.promisify(snapshots.restore);
+        snapshots.list = util.promisify(snapshots.list);
+        snapshots.delete = util.promisify(snapshots.delete);
+    }
+    return snapshots;
 };
 
 Machine.prototype.boxRepackage = function (name, provider, version, cb) {
@@ -264,3 +268,19 @@ Machine.prototype._generic = function (name, args, cb) {
  *
  */
 module.exports = Machine;
+
+module.exports.promisify = function () {
+    if (Common.isPromised()) {
+        Machine.prototype.sshConfig = util.promisify(Machine.prototype.sshConfig);
+        Machine.prototype.status = util.promisify(Machine.prototype.status);
+        Machine.prototype.up = util.promisify(Machine.prototype.up);
+        Machine.prototype.init = util.promisify(Machine.prototype.init);
+        Machine.prototype.destroy = util.promisify(Machine.prototype.destroy);
+        Machine.prototype.suspend = util.promisify(Machine.prototype.suspend);
+        Machine.prototype.resume = util.promisify(Machine.prototype.resume);
+        Machine.prototype.halt = util.promisify(Machine.prototype.halt);
+        Machine.prototype.reload = util.promisify(Machine.prototype.reload);
+        Machine.prototype.provision = util.promisify(Machine.prototype.provision);
+        Machine.prototype.boxRepackage = util.promisify(Machine.prototype.boxRepackage);
+    }
+};

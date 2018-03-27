@@ -170,6 +170,16 @@ Custom vagrant location:
 $ VAGRANT_DIR=/custom/path node example.js
 ```
 
+Promises
+===
+
+```js
+var vagrant = require('../index');
+vagrant.promisify();
+
+vagrant.init('ubuntu/trusty64').then(successCb, errorCb);
+```
+
 TODO
 ===
 - multi-machine
@@ -179,3 +189,5 @@ TODO
 - [x] boxing
 - [x] provisoning
 - [x] providers
+- [x] (native) promises (if available)
+- use ES6 (after which will become version 2.x.x)
