@@ -31,6 +31,8 @@ var vagrant = require('node-vagrant');
 
 // view version
 vagrant.version(function(err, out) {});
+// or --version ; out = { status: '2.0.3', major: 2, minor: 0, patch: 3 }
+vagrant.versionStatus(function(err, out) {});
 
 // view global status
 //you can specify '--prune' as additional argument. By default global-status is based on a cache,

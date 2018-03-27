@@ -102,4 +102,12 @@ describe('test parsers', function () {
             latestVersion: '3.0.0'
         }]);
     });
+    it('should test version status parser', function () {
+        var versionStatus = 'Vagrant 2.0.3\n';
+        var version = parsers.versionStatusParser(versionStatus);
+        expect(version.status).to.equal('2.0.3');
+        expect(version.major).to.equal(2);
+        expect(version.minor).to.equal(0);
+        expect(version.patch).to.equal(3);
+    });
 });

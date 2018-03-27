@@ -14,6 +14,10 @@ vagrant.version(function (err, out) {
     console.log(err, out);
 });
 
+vagrant.versionStatus(function (err, out) {
+    console.log(err, out);
+});
+
 var machine = vagrant.create({ cwd: process.cwd(), env: process.env });
 
 function onInit(err, out) {

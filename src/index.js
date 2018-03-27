@@ -342,11 +342,21 @@ module.exports.globalStatus = function (args, cb) {
 };
 
 module.exports.create = function (opts) {
-    return Machine(opts);
+    return new Machine(opts);
 };
 
 module.exports.version = function (cb) {
     module.exports._run(buildCommand('version'), cb);
+};
+
+module.exports.versionStatus = function (cb) {
+    var command  = buildCommand('--version');
+    module.exports._run(command, function (err, out) {
+        if (err) {
+            return cb(err);
+        }
+        cb(null, parsers.versionStatusParser(out));
+    });
 };
 
 module.exports.boxAdd = function (box, args, cb) {
