@@ -62,7 +62,7 @@ module.exports._run = function (command, opts, cb) {
         command = _command(command);
     }
 
-    if (process.env.NODE_DEBUG) {
+    if (process.env.NODE_DEBUG && !process.env.NODE_VAGRANT_DISABLE_DEBUG) {
         console.log('node-vagrant command:', command);
     }
 
