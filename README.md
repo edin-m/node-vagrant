@@ -139,6 +139,15 @@ Events
 .on('progress', function(out) {}); // receive stdout box download progress
 ```
 
+Example
+===
+
+Example script of a usage is in example/example.js
+
+```
+$ npm run example
+```
+
 Flags & env vars
 ===
 
@@ -149,18 +158,14 @@ node-vagrant command: [ 'global-status' ]
 node-vagrant command: [ 'version' ]
 ```
 
-Disable the debug
+Disable the debug:
 ```js
 $ NODE_DEBUG=1 NODE_VAGRANT_DISABLE_DEBUG=1 node example.js
 ```
 
-Example
-===
-
-Example script of a usage is in example/example.js
-
-```
-npm run example
+Custom vagrant location:
+```js
+$ VAGRANT_DIR=/custom/path node example.js
 ```
 
 TODO
