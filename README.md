@@ -12,7 +12,7 @@ Installation
 ===
 
 ```
-npm install node-vagrant --save
+$ npm install node-vagrant --save
 ```
 
 Usage
@@ -137,6 +137,21 @@ Events
 .on('up-progress', function(out) {}); // receive stdout progress from up of vagrant
 
 .on('progress', function(out) {}); // receive stdout box download progress
+```
+
+Flags & env vars
+===
+
+Debug the commands sent to vagrant:
+```js
+$ NODE_DEBUG=1 node example.js
+node-vagrant command: [ 'global-status' ]
+node-vagrant command: [ 'version' ]
+```
+
+Disable the debug
+```js
+$ NODE_DEBUG=1 NODE_VAGRANT_DISABLE_DEBUG=1 node example.js
 ```
 
 Example
