@@ -163,7 +163,9 @@ Machine.prototype.init = function (args, config, cb) {
     }
 
     if (!config.config) {
-        config.config = {};
+        config.config = {
+            vm: { box: args }
+        };
     }
 
     self._prepareProvisioners(config.config);

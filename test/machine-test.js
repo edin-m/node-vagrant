@@ -7,7 +7,7 @@ var Machine = require('../src/machine');
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 /* eslint quotes: "off" */
 
-describe('it should test node-vagrant', function () {
+describe('it should test Machine class', function () {
     var machine;
 
     before(function (done) {
@@ -15,14 +15,18 @@ describe('it should test node-vagrant', function () {
         done();
     });
 
-    describe('should test vagrant machine commands', function () {
+    describe('should test machine commands', function () {
         // mock _mainRun as to call a callback within tests
         var runFuncBefore;
         before(function (done) {
             runFuncBefore = machine._run;
             done();
         });
-        it('should test vagrant init', function (done) {
+        after(function (done) {
+            machine._run = runFuncBefore;
+            done();
+        });
+        it('should test machine init', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(3);
@@ -33,7 +37,19 @@ describe('it should test node-vagrant', function () {
             };
             machine.init('ubuntu/trusty64', { }, function () { });
         });
-        it('should test vagrant up', function (done) {
+        it('should test machine init without config', function (done) {
+            var oldChangeVagrantfile = machine._changeVagrantfile;
+            machine._changeVagrantfile = function (config) {
+                machine._changeVagrantfile = oldChangeVagrantfile;
+                expect(config.config.vm.box).to.equal('ubuntu/trusty64');
+                done();
+            };
+            machine._run = function (command, cb) {
+                cb(null);
+            };
+            machine.init('ubuntu/trusty64');
+        });
+        it('should test machine up', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -43,7 +59,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.up();
         });
-        it('should test vagrant up emit progress', function (done) {
+        it('should test machine up emit progress', function (done) {
             var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
             var ee = new EventEmitter;
             var spy = sinon.spy();
@@ -57,7 +73,7 @@ describe('it should test node-vagrant', function () {
             expect(spy.getCall(0).args[0]).to.equal(dataStr);
             done();
         });
-        it('should test vagrant up emit up-progress', function (done) {
+        it('should test machine up emit up-progress', function (done) {
             var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
             var ee = new EventEmitter;
             var spy = sinon.spy();
@@ -71,7 +87,7 @@ describe('it should test node-vagrant', function () {
             expect(spy.getCall(0).args).to.deep.equal(['default', '97', '899k/s', '0:00:24']);
             done();
         });
-        it('should test vagrant status', function (done) {
+        it('should test machine status', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -80,7 +96,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.status();
         });
-        it('should test vagrant ssh config', function (done) {
+        it('should test machine ssh config', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -89,7 +105,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.sshConfig();
         });
-        it('should test vagrant suspend', function (done) {
+        it('should test machine suspend', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -98,7 +114,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.suspend();
         });
-        it('should test vagrant resume', function (done) {
+        it('should test machine resume', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(1);
@@ -107,7 +123,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.resume();
         });
-        it('should test vagrant halt', function (done) {
+        it('should test machine halt', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
@@ -117,7 +133,7 @@ describe('it should test node-vagrant', function () {
             };
             machine.halt();
         });
-        it('should test vagrant destroy', function (done) {
+        it('should test machine destroy', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
                 expect(command.length).to.equal(2);
@@ -231,11 +247,6 @@ describe('it should test node-vagrant', function () {
                     expect(provisioner.config[key]).to.equal(orig[key]);
                 }
             });
-            done();
-        });
-
-        after(function (done) {
-            machine._run = runFuncBefore;
             done();
         });
     });
