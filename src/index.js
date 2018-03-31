@@ -126,6 +126,7 @@ module.exports.boxUpdate = function (box, provider, cb) {
 };
 
 module.exports.promisify = function () {
+    Common.enablePromised();
     if (Common.isPromised()) {
         Machine.promisify();
         module.exports.globalStatus = util.promisify(module.exports.globalStatus);
