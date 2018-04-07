@@ -1,7 +1,8 @@
 var _ = require('lodash');
 
 var MATCHERS = {
-    download: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i
+    download: /(\S+): Progress: (\d{1,2})% \(Rate: ([\dmgks\/]+), Estimated time remaining: ([\d\-:]+)\)/i,
+    versionStatus: /Vagrant (([\d]+).([\d]+).([\d]+))/
 };
 
 var SSH_CONFIG_MATCHERS = {
@@ -71,6 +72,27 @@ function statusParser(statusText) {
         };
     });
     return statuses;
+}
+
+/**
+ * parses the `vagrant --version` output
+ * @param status
+ */
+function versionStatusParser(status) {
+    var res = status.match(MATCHERS.versionStatus);
+    var version = {
+        status: null,
+        major: null,
+        minor: null,
+        patch: null
+    };
+    if (res) {
+        version.status = res[1];
+        version.major = Number(res[2]);
+        version.minor = Number(res[3]);
+        version.patch = Number(res[4]);
+    }
+    return version;
 }
 
 /**
@@ -184,5 +206,6 @@ module.exports = {
     globalStatusParser: globalStatusParser,
     sshConfigParser: sshConfigParser,
     boxListParser: boxListParser,
-    boxListOutdatedParser: boxListOutdatedParser
+    boxListOutdatedParser: boxListOutdatedParser,
+    versionStatusParser: versionStatusParser
 };

@@ -21,7 +21,7 @@ describe('test parsers', function () {
     });
     describe('Vagrant status parsing', function () {
         it('should parse all status information', function () {
-            var exStats = fs.readFileSync('./test/status').toString();
+            var exStats = fs.readFileSync(__dirname + '/data/status').toString();
             var machStats = parsers.statusParser(exStats);
             expect(Object.keys(machStats).length).to.equal(2);
             expect(machStats['my_server'].status).to.equal('running');
@@ -101,5 +101,13 @@ describe('test parsers', function () {
             currentVersion: '2.2.0',
             latestVersion: '3.0.0'
         }]);
+    });
+    it('should test version status parser', function () {
+        var versionStatus = 'Vagrant 2.0.3\n';
+        var version = parsers.versionStatusParser(versionStatus);
+        expect(version.status).to.equal('2.0.3');
+        expect(version.major).to.equal(2);
+        expect(version.minor).to.equal(0);
+        expect(version.patch).to.equal(3);
     });
 });

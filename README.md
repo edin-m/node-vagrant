@@ -12,7 +12,7 @@ Installation
 ===
 
 ```
-npm install node-vagrant --save
+$ npm install node-vagrant --save
 ```
 
 Usage
@@ -31,6 +31,8 @@ var vagrant = require('node-vagrant');
 
 // view version
 vagrant.version(function(err, out) {});
+// or --version ; out = { status: '2.0.3', major: 2, minor: 0, patch: 3 }
+vagrant.versionStatus(function(err, out) {});
 
 // view global status
 //you can specify '--prune' as additional argument. By default global-status is based on a cache,
@@ -145,7 +147,37 @@ Example
 Example script of a usage is in example/example.js
 
 ```
-npm run example
+$ npm run example
+```
+
+Flags & env vars
+===
+
+Debug the commands sent to vagrant:
+```js
+$ NODE_DEBUG=1 node example.js
+node-vagrant command: [ 'global-status' ]
+node-vagrant command: [ 'version' ]
+```
+
+Disable the debug:
+```js
+$ NODE_DEBUG=1 NODE_VAGRANT_DISABLE_DEBUG=1 node example.js
+```
+
+Custom vagrant location:
+```js
+$ VAGRANT_DIR=/custom/path node example.js
+```
+
+Promises
+===
+
+```js
+var vagrant = require('../index');
+vagrant.promisify();
+
+vagrant.init('ubuntu/trusty64').then(successCb, errorCb);
 ```
 
 TODO
@@ -154,6 +186,8 @@ TODO
 - more detail vagrant file settings
     - firewall
     - networking
-- boxing
-- ~~provisoning~~
-- ~~providers~~
+- [x] boxing
+- [x] provisoning
+- [x] providers
+- [x] (native) promises (if available)
+- use ES6 (after which will become version 2.x.x)

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var lodash = require('lodash');
 var vagrant = require('../index');
 
 process.env.NODE_DEBUG = true;
@@ -11,6 +10,10 @@ vagrant.globalStatus(function (err, out) {
 });
 
 vagrant.version(function (err, out) {
+    console.log(err, out);
+});
+
+vagrant.versionStatus(function (err, out) {
     console.log(err, out);
 });
 
@@ -68,13 +71,15 @@ function onInit(err, out) {
     });
 }
 
-// machine.init('ubuntu/trusty64', onInit);
-var config = {
-    config: {
-        vm: {
-            box: 'ubuntu/trusty64'
-        }
-    }
-};
-machine.init('ubuntu/trusty64', config, onInit);
+// adv config:
+// var config = {
+//     config: {
+//         vm: {
+//             box: 'ubuntu/trusty64'
+//         }
+//     }
+// };
+// machine.init('ubuntu/trusty64', config, onInit);
+
+machine.init('ubuntu/trusty64', onInit);
 
