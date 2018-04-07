@@ -182,12 +182,12 @@ vagrant.init('ubuntu/trusty64').then(successCb, errorCb);
 
 TODO
 ===
-- multi-machine
-- more detail vagrant file settings
-    - firewall
-    - networking
+- [ ] multi-machine
+- [ ] more detail vagrant file settings
+    - [ ] firewall
+    - [ ] networking
 - [x] boxing
 - [x] provisoning
 - [x] providers
 - [x] (native) promises (if available)
-- use ES6 (after which will become version 2.x.x)
+- [ ] use ES6 (after which will become version 2.x.x)
