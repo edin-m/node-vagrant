@@ -212,6 +212,14 @@ Machine.prototype.provision = function (cb) {
     this._generic('provision', [], cb);
 };
 
+Machine.prototype.pluginUpdate = function (cb) {
+    this._generic('plugin update', [], cb);
+};
+
+Machine.prototype.pluginRepair = function (cb) {
+    this._generic('plugin repair', [], cb);
+};
+
 Machine.prototype.snapshots = function () {
     var self = this;
     var snapshots = {
@@ -282,5 +290,8 @@ module.exports.promisify = function () {
         Machine.prototype.reload = util.promisify(Machine.prototype.reload);
         Machine.prototype.provision = util.promisify(Machine.prototype.provision);
         Machine.prototype.boxRepackage = util.promisify(Machine.prototype.boxRepackage);
+        Machine.prototype.pluginUpdate = util.promisify(Machine.prototype.pluginUpdate);
+        Machine.prototype.pluginRepair = util.promisify(Machine.prototype.pluginRepair);
+
     }
 };
