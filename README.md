@@ -65,11 +65,17 @@ machine.status(function(err, out) {});
 // out is object {} with properties: port, hostname, user, private_key
 machine.sshConfig(function(err, out) {});
 
+// provision
+machine.provision(function(err, out) {});
+
 // suspend
 machine.suspend(function(err, out) {});
 
 // resume
 machine.resume(function(err, out) {});
+
+// reload
+machine.reload(function(err, out) {});
 
 // halt
 machine.halt(function(err, out) {});
@@ -83,10 +89,13 @@ machine.destroy(function(err, out) {});
 // example:
 machine.snapshots().push(cb);
 
-// box repackage
-// must be specific to a vagrant environment hence location in machine
-machine.boxRepackage(name, provider, version, function(err, out) {});
+// box plugin update
+// updates all plugins that are installed within machine
+machine.boxRepackage(function(err, out) {});
 
+// box plugin repair
+// repair improperly initialized user installed custom plugins within machine
+machine.pluginRepair(function(err, out) {});
 
 // boxes
 
