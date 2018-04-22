@@ -90,7 +90,7 @@ machine.destroy(function(err, out) {});
 machine.snapshots().push(cb);
 
 // box repackage
-// must be specific to a vagrant environment hence location in machine	+// updates all plugins that are installed within machine
+// must be specific to a vagrant environment hence location in machine
 machine.boxRepackage(name, provider, version, function(err, out) {})
 
 // box plugin update
