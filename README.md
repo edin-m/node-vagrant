@@ -89,9 +89,13 @@ machine.destroy(function(err, out) {});
 // example:
 machine.snapshots().push(cb);
 
+// box repackage
+// must be specific to a vagrant environment hence location in machine	+// updates all plugins that are installed within machine
+machine.boxRepackage(name, provider, version, function(err, out) {})
+
 // box plugin update
 // updates all plugins that are installed within machine
-machine.boxRepackage(function(err, out) {});
+machine.pluginUpdate(function(err, out) {});
 
 // box plugin repair
 // repair improperly initialized user installed custom plugins within machine
