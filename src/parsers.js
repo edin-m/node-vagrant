@@ -131,9 +131,7 @@ function globalStatusParser(data) {
  */
 function sshConfigParser(out) {
     return out.split('\n\n')
-        .filter(function (out) {
-            return !_.isEmpty(out);
-        })
+        .filter(nonEmptyVagrantUpdateFilter)
         .map(function (out) {
             var config = {};
             for (var key in SSH_CONFIG_MATCHERS) {
@@ -156,9 +154,7 @@ function sshConfigParser(out) {
  */
 function boxListParser(out) {
     return out.split('\n')
-        .filter(function (out) {
-            return !_.isEmpty(out);
-        })
+        .filter(nonEmptyVagrantUpdateFilter)
         .map(function (out) {
             var box = {};
             for (var key in BOX_LIST_MATCHERS) {
@@ -172,9 +168,7 @@ function boxListParser(out) {
  */
 function boxListOutdatedParser(out) {
     return out.split('\n')
-        .filter(function (out) {
-            return !_.isEmpty(out);
-        })
+        .filter(nonEmptyVagrantUpdateFilter)
         .map(function (out) {
             var box = {};
 
@@ -195,6 +189,10 @@ function boxListOutdatedParser(out) {
             }
             return box;
         });
+}
+
+function nonEmptyVagrantUpdateFilter(out) {
+    return !_.isEmpty(out) && !_.startsWith(out, '==>');
 }
 
 /**
