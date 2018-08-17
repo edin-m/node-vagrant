@@ -1,3 +1,6 @@
+==> vagrant: A new version of Vagrant is available: 2.1.2!
+==> vagrant: To upgrade visit: https://www.vagrantup.com/downloads.html
+
 * 'ubuntu/trusty64' (v20170818.0.0) is up to date
 * 'my_box' wasn't added from a catalog, no version information
 * 'laravel/homestead' is outdated! Current: 2.2.0. Latest: 3.0.0

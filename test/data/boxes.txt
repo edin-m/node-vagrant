@@ -1,2 +1,5 @@
+==> vagrant: A new version of Vagrant is available: 2.1.2!
+==> vagrant: To upgrade visit: https://www.vagrantup.com/downloads.html
+
 my_box      (virtualbox, 0)
 ubuntu/trusty64 (virtualbox, 20170818.0.0)
