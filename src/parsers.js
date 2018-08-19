@@ -200,7 +200,7 @@ function isVagrantCheckVersionMessage(line) {
         /new version of Vagrant is available/.test(line) ||
         /To upgrade visit/.test(line)
     );
-    return _.startsWith('==>', line) && isNewVersionMessage;
+    return _.startsWith(line, '==>') && isNewVersionMessage;
 }
 
 /**
