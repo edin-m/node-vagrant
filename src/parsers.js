@@ -192,7 +192,15 @@ function boxListOutdatedParser(out) {
 }
 
 function nonEmptyVagrantUpdateFilter(out) {
-    return !_.isEmpty(out) && !_.startsWith(out, '==>');
+    return !_.isEmpty(out) && !isVagrantCheckVersionMessage(out);
+}
+
+function isVagrantCheckVersionMessage(line) {
+    var isNewVersionMessage = (
+        /new version of Vagrant is available/.test(line) ||
+        /To upgrade visit/.test(line)
+    );
+    return line.startsWith('==>') && isNewVersionMessage;
 }
 
 /**
