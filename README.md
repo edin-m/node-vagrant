@@ -35,9 +35,9 @@ vagrant.version(function(err, out) {});
 vagrant.versionStatus(function(err, out) {});
 
 // view global status
-//you can specify '--prune' as additional argument. By default global-status is based on a cache,
-//prune removes invalid entries from the list.
-//Note that this is much more time consuming than simply listing the entries.
+// you can specify '--prune' as additional argument. By default global-status is based on a cache,
+// prune removes invalid entries from the list.
+// Note that this is much more time consuming than simply listing the entries.
 vagrant.globalStatus(function(err, out) {});
 vagrant.globalStatus('--prune', function(err, out) {});
 
@@ -62,7 +62,7 @@ machine.up(function(err, out) {})
 machine.status(function(err, out) {});
 
 // get ssh config - useful to retrieve private and connect to machine with ssh2
-// out is object {} with properties: port, hostname, user, private_key
+// out is an array of objects [{}] with properties: port, hostname, user, private_key
 machine.sshConfig(function(err, out) {});
 
 // provision
@@ -111,12 +111,12 @@ vagrant.boxAdd(box, args, function(err, out) {})
     .on('progress', function(out) {});
 
 // box list
-// out is object {} with properties: name, provider, version
+// out is an array of objects [{}] with properties: name, provider, version
 vagrant.boxList(args, function(err, out) {});
 
 // box outdated
 // --global is used by default
-// out is object {} with properties: name, status, currentVersion, latestVersion
+// out is an array of objects [{}] with properties: name, status, currentVersion, latestVersion
 // status can be 'up to date' 'out of date' 'unknown'
 // if status is unknown currentVersion and latestVersion will be null
 vagrant.boxOutdated(args, function(err, out) {});
