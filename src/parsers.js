@@ -169,6 +169,12 @@ function boxListParser(out) {
 function boxListOutdatedParser(out) {
     return out.split('\n')
         .filter(nonEmptyVagrantUpdateFilter)
+        .filter(function (line) {
+            if (line.includes('There are no installed boxes!')) {
+                return false;
+            }
+            return true;
+        })
         .map(function (out) {
             var box = {};
 

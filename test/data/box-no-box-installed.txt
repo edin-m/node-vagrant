@@ -1,0 +1,1 @@
+There are no installed boxes! Use `vagrant box add` to add some.
