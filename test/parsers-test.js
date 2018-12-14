@@ -82,6 +82,11 @@ describe('test parsers', function () {
             version: '20170818.0.0',
         }]);
     });
+    it('should test box list parser - no box installed', function () {
+        var data = fs.readFileSync(__dirname + '/data/box-no-box-installed.txt').toString();
+        var res = parsers.boxListOutdatedParser(data);
+        expect(res).to.deep.equal([]);
+    });
     it('should test box outdated parser', function () {
         var data = fs.readFileSync(__dirname + '/data/box-outdated.txt').toString();
         var res = parsers.boxListOutdatedParser(data);
