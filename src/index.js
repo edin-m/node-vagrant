@@ -78,7 +78,12 @@ module.exports.boxOutdated = function (args, cb) {
     cb = cb || args;
 
     var command = Command.buildCommand(['box', 'outdated', '--global'], args);
-    module.exports._run(command, cb);
+    module.exports._run(command, function (err, out) {
+        if (err) {
+            return cb(err);
+        }
+        cb(null, parsers.boxListOutdatedParser(out));
+    });
 };
 
 module.exports.boxPrune = function (args, cb) {
