@@ -84,7 +84,7 @@ describe('test parsers', function () {
     });
     it('should test box list parser - no box installed', function () {
         var data = fs.readFileSync(__dirname + '/data/box-no-box-installed.txt').toString();
-        var res = parsers.boxListOutdatedParser(data);
+        var res = parsers.boxListParser(data);
         expect(res).to.deep.equal([]);
     });
     it('should test box outdated parser', function () {
