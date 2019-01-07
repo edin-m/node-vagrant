@@ -155,6 +155,7 @@ function sshConfigParser(out) {
 function boxListParser(out) {
     return out.split('\n')
         .filter(nonEmptyVagrantUpdateFilter)
+        .filter(noBoxResponse)
         .map(function (out) {
             var box = {};
             for (var key in BOX_LIST_MATCHERS) {
@@ -169,12 +170,7 @@ function boxListParser(out) {
 function boxListOutdatedParser(out) {
     return out.split('\n')
         .filter(nonEmptyVagrantUpdateFilter)
-        .filter(function (line) {
-            if (line.includes('There are no installed boxes!')) {
-                return false;
-            }
-            return true;
-        })
+        .filter(noBoxResponse)
         .map(function (out) {
             var box = {};
 
@@ -195,6 +191,10 @@ function boxListOutdatedParser(out) {
             }
             return box;
         });
+}
+
+function noBoxResponse(line) {
+    return !line.includes('There are no installed boxes!');
 }
 
 function nonEmptyVagrantUpdateFilter(out) {
