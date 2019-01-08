@@ -107,7 +107,7 @@ describe('it should test node-vagrant', function () {
             var spy = sinon.spy();
             var revert = vagrant.__set__('parsers', { boxListParser: spy });
             vagrant._run = function (command, cb) {
-                cb(null, 'There are no installed boxes! Use `vagrant box add` to add some.');
+                cb();
                 expect(spy.calledOnce).to.equal(true);
                 revert();
                 done();
@@ -119,7 +119,7 @@ describe('it should test node-vagrant', function () {
             var spy = sinon.spy();
             var revert = vagrant.__set__('parsers', { boxListOutdatedParser: spy });
             vagrant._run = function (command, cb) {
-                cb(null, 'There are no installed boxes! Use `vagrant box add` to add some.');
+                cb();
                 expect(spy.calledOnce).to.equal(true);
                 revert();
                 done();
