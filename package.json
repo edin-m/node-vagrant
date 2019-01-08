@@ -47,7 +47,7 @@
   "homepage": "https://github.com/edin-m/node-vagrant",
   "license": "ISC",
   "dependencies": {
-    "lodash": "3.3.0"
+    "lodash": "4.17.5"
   },
   "devDependencies": {
     "chai": "2.1.0",
