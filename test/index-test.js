@@ -115,6 +115,18 @@ describe('it should test node-vagrant', function () {
 
             vagrant.boxList(function () {});
         });
+        it('should test box outdated calling parser', function (done) {
+            var spy = sinon.spy();
+            var revert = vagrant.__set__('parsers', { boxListOutdatedParser: spy });
+            vagrant._run = function (command, cb) {
+                cb(null, 'There are no installed boxes! Use `vagrant box add` to add some.');
+                expect(spy.calledOnce).to.equal(true);
+                revert();
+                done();
+            };
+
+            vagrant.boxOutdated(function () {});
+        });
         it('should test box update emit progress', function (done) {
             var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
             var ee = new EventEmitter;
