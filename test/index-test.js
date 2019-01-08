@@ -1,8 +1,9 @@
 var EventEmitter = require('events').EventEmitter;
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var rewire = require('rewire');
 
-var vagrant = require('../index');
+var vagrant = rewire('../src/index');
 
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 /* eslint quotes: "off" */
@@ -101,6 +102,18 @@ describe('it should test node-vagrant', function () {
                 return { stdout: { on: function () { } }, stderr: { } };
             };
             vagrant.boxUpdate('ubuntu/trusty64', 'virtualbox');
+        });
+        it('should test box list calling parser', function (done) {
+            var spy = sinon.spy();
+            var revert = vagrant.__set__('parsers', { boxListParser: spy });
+            vagrant._run = function (command, cb) {
+                cb(null, 'There are no installed boxes! Use `vagrant box add` to add some.');
+                expect(spy.calledOnce).to.equal(true);
+                revert();
+                done();
+            };
+
+            vagrant.boxList(function () {});
         });
         it('should test box update emit progress', function (done) {
             var dataStr = '    default: Progress: 97% (Rate: 899k/s, Estimated time remaining: 0:00:24)';
