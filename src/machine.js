@@ -212,12 +212,37 @@ Machine.prototype.provision = function (cb) {
     this._generic('provision', [], cb);
 };
 
-Machine.prototype.pluginUpdate = function (cb) {
-    this._generic('plugin update', [], cb);
-};
-
-Machine.prototype.pluginRepair = function (cb) {
-    this._generic('plugin repair', [], cb);
+Machine.prototype.plugin = function () {
+    var self = this;
+    var plugin = {
+        expunge: function (args, cb) {
+            self._generic('plugin', 'expunge', args, cb);
+        },
+        install: function (args, cb) {
+            self._generic('plugin', 'install', args, cb);
+        },
+        uninstall: function (args, cb) {
+            self._generic('plugin', 'uninstall', args, cb);
+        },
+        list: function (args, cb) {
+            self._generic('plugin', 'list', args, cb); 
+        },
+        repair: function  (args, cb) {
+            self._generic('plugin', 'repair', args, cb); 
+        },
+        update: function  (args, cb) {
+            self._generic('plugin', 'update', args, cb);
+        }
+    };
+    if (Common.isPromised()) {
+        plugin.expunge = util.promisify(plugin.expunge);
+        plugin.install = util.promisify(plugin.install);
+        plugin.uninstall = util.promisify(plugin.uninstall);
+        plugin.list = util.promisify(plugin.list);
+        plugin.repair = util.promisify(plugin.repair);
+        plugin.update = util.promisify(plugin.update);
+    }
+    return plugin;
 };
 
 Machine.prototype.snapshots = function () {

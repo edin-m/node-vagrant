@@ -93,13 +93,10 @@ machine.snapshots().push(cb);
 // must be specific to a vagrant environment hence location in machine
 machine.boxRepackage(name, provider, version, function(err, out) {})
 
-// box plugin update
-// updates all plugins that are installed within machine
-machine.pluginUpdate(function(err, out) {});
-
-// box plugin repair
-// repair improperly initialized user installed custom plugins within machine
-machine.pluginRepair(function(err, out) {});
+// plugins
+// expunge, install, uninstall, repair, update, list and a plugin() function.
+// example:
+machine.plugin().expunge(args, cb);
 
 // boxes
 
