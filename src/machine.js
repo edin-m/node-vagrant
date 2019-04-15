@@ -315,8 +315,5 @@ module.exports.promisify = function () {
         Machine.prototype.reload = util.promisify(Machine.prototype.reload);
         Machine.prototype.provision = util.promisify(Machine.prototype.provision);
         Machine.prototype.boxRepackage = util.promisify(Machine.prototype.boxRepackage);
-        Machine.prototype.pluginUpdate = util.promisify(Machine.prototype.pluginUpdate);
-        Machine.prototype.pluginRepair = util.promisify(Machine.prototype.pluginRepair);
-
     }
 };
