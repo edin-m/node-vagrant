@@ -51,6 +51,18 @@ Machine.prototype._run = function (command, cb) {
         }
     });
 
+    if (!!child.stdout) {
+        child.stdout.on('data', function (data) {
+            self.emit('stdout', data);
+        });
+    }
+
+    if (!!child.stderr) {
+        child.stderr.on('data', function (data) {
+            self.emit('stderr', data);
+        });
+    }
+
     return child;
 };
 

@@ -155,6 +155,13 @@ Events
 .on('progress', function(out) {}); // receive stdout box download progress
 ```
 
+Receive any stdout/stderr output from a child subprocess. These work only on a Machine instance:
+
+```
+.on('stdout', function(data) {}); // data is a Buffer
+.on('stderr', function(data) {}); // data is a Buffer
+```
+
 Example
 ===
 

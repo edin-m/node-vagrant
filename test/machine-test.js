@@ -1,28 +1,41 @@
 var EventEmitter = require('events').EventEmitter;
+
+var rewire = require('rewire');
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
-var Machine = require('../src/machine');
+var Machine = rewire('../src/machine');
 
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 /* eslint quotes: "off" */
 
 describe('it should test Machine class', function () {
     var machine;
+    var commandMock = Machine.__get__('Command');
 
     before(function (done) {
         machine = new Machine({ cwd: __dirname });
         done();
     });
 
+    beforeEach(function (done) {
+        commandMock = Machine.__get__('Command');
+        done();
+    });
+
+    afterEach(function (done) {
+        Machine.__set__('Command', commandMock);
+        done();
+    });
+
     describe('should test machine commands', function () {
         // mock _mainRun as to call a callback within tests
         var runFuncBefore;
-        before(function (done) {
+        beforeEach(function (done) {
             runFuncBefore = machine._run;
             done();
         });
-        after(function (done) {
+        afterEach(function (done) {
             machine._run = runFuncBefore;
             done();
         });
@@ -248,6 +261,47 @@ describe('it should test Machine class', function () {
                 }
             });
             done();
+        });
+
+        it('should emit stdout', function (done) {
+            var ee = new EventEmitter();
+            var buf = Buffer.from('output');
+            Machine.__set__('Command', {
+                runCommand: function (_, opts, cb) {
+                    cb();
+                    setTimeout(function () {
+                        ee.emit('data', buf);
+                    }, 15);
+                    return { stdout: ee };
+                }
+            });
+
+            machine.on('stdout', function (data) {
+                expect(data).to.equal(buf);
+                done();
+            });
+            machine._run('any command', function () {});
+        });
+
+        it('should emit stderr', function (done) {
+            var ee = new EventEmitter();
+            var buf = Buffer.from('output');
+            Machine.__set__('Command', {
+                runCommand: function (_, opts, cb) {
+                    cb();
+                    setTimeout(function () {
+                        ee.emit('data', buf);
+                    }, 15);
+                    return { stderr: ee };
+                }
+            });
+
+            machine.on('stderr', function (data) {
+                expect(data).to.equal(buf);
+                done();
+            });
+
+            machine._run(['any command'], function () {});
         });
     });
 });
