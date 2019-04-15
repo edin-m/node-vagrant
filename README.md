@@ -98,6 +98,10 @@ machine.boxRepackage(name, provider, version, function(err, out) {})
 // example:
 machine.plugin().expunge(args, cb);
 
+// DEPRECATED! For backward compatibility only
+machine.pluginUpdate(function(err, out) {});
+machine.pluginRepair(function(err, out) {});
+
 // boxes
 
 // box add

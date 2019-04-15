@@ -212,6 +212,16 @@ Machine.prototype.provision = function (cb) {
     this._generic('provision', [], cb);
 };
 
+Machine.prototype.pluginUpdate = function (cb) {
+    console.warn('DEPRECATED, use plugin().update()');
+    this._generic('plugin update', [], cb);
+};
+
+Machine.prototype.pluginRepair = function (cb) {
+    console.warn('DEPRECATED, use plugin().repair()');
+    this._generic('plugin repair', [], cb);
+};
+
 Machine.prototype.plugin = function () {
     var self = this;
     var plugin = {
