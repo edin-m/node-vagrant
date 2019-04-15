@@ -65,6 +65,10 @@ function runCommand(command, opts, cb) {
             }
             return cb(null, out);
         });
+
+        child.on('error', function (err) {
+            return cb(err);
+        });
     }
 
     return child;
