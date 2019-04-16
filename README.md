@@ -158,8 +158,8 @@ Events
 Receive any stdout/stderr output from a child subprocess. These work only on a Machine instance:
 
 ```
-.on('stdout', function(data) {}); // data is a Buffer
-.on('stderr', function(data) {}); // data is a Buffer
+machine.on('stdout', function(data) {}); // data is a Buffer
+machine.on('stderr', function(data) {}); // data is a Buffer
 ```
 
 Example
