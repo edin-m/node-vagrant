@@ -110,12 +110,13 @@ module.exports.boxUpdate = function (box, provider, cb) {
         return new EventEmitter;
     }
 
-    if (typeof provider !== 'string' && cb) {
-        cb('provider must be provided as a string');
-        return new EventEmitter;
+    var commandArgs = ['box', 'update', '--box', box];
+    if (typeof provider === 'string') {
+        commandArgs.push('--provider');
+        commandArgs.push(provider);
     }
 
-    var command = Command.buildCommand(['box', 'update', '--box', box, '--provider', provider]);
+    var command = Command.buildCommand(commandArgs);
     var proc = module.exports._run(command, cb);
 
     var emitter = new EventEmitter;

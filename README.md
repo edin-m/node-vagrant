@@ -135,6 +135,7 @@ vagrant.boxRemove(name, args, function(err, out) {});
 
 // box update
 // uses the --box and --provider flags by default
+// provider can be null and in that case no --provider arg is added
 vagrant.boxUpdate(box, provider, function(err, out) {});
     .on('progress', function(out) {});
 

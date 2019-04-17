@@ -142,6 +142,20 @@ describe('it should test node-vagrant', function () {
             done();
         });
 
+        it('should test box update without the provider', function (done) {
+            vagrant._run = function (command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(4);
+                expect(command[0]).to.equal('box');
+                expect(command[1]).to.equal('update');
+                expect(command[2]).to.equal('--box');
+                expect(command[3]).to.equal('ubuntu/trusty64');
+                done();
+                return { stdout: { on: function () { } }, stderr: { } };
+            };
+            vagrant.boxUpdate('ubuntu/trusty64', null);
+        });
+
         after(function (done) {
             vagrant._run = runFuncBeforeVagrant;
             done();
