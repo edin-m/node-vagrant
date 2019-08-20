@@ -1,6 +1,6 @@
 {
   "name": "node-vagrant",
-  "version": "1.3.9",
+  "version": "1.3.10",
   "description": "Node js wrapper for vagrant CLI - command line tool.",
   "main": "index.js",
   "keywords": [
