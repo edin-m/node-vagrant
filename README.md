@@ -46,7 +46,7 @@ vagrant.globalStatus('--prune', function(err, out) {});
 // create machine - does not run command or init machine
 // you can specify directory where Vagrantfile will be located
 // and machine instanced
-var machine = vagrant.create({ cwd: [], env: [] });
+var machine = vagrant.create({ cwd: process.cwd(), env: [] });
 
 // init machine
 // you can specify additional arguments by using array (applicable to other functions)
