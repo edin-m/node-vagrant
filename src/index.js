@@ -42,10 +42,10 @@ module.exports.versionStatus = function (cb) {
 };
 
 module.exports.boxAdd = function (box, args, cb) {
+    cb = cb || args;
     if (typeof box !== 'string' && cb) {
         return cb('box must be provided as a string');
     }
-    cb = cb || args;
 
     var command = Command.buildCommand(['box', 'add', '-f'], args, box);
     var proc = module.exports._run(command, cb);
