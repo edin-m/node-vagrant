@@ -78,6 +78,20 @@ Machine.prototype.sshConfig = function (cb) {
     });
 };
 
+Machine.prototype.sshCommand = function (cmd, cb) {
+    var command = Command.buildCommand('ssh', ['-c', cmd]);
+    var proc = this._run(command, cb);
+
+    var self = this;
+    proc.stdout.on('data', function (buff) {
+        self.emit('ssh-out', buff.toString());
+    });
+
+    proc.stderr.on('data', function(buff) {
+        self.emit('ssh-err', buff.toString());
+    });
+};
+
 Machine.prototype.status = function (cb) {
     var command = Command.buildCommand('status');
 
@@ -327,6 +341,7 @@ module.exports = Machine;
 module.exports.promisify = function () {
     if (Common.isPromised()) {
         Machine.prototype.sshConfig = util.promisify(Machine.prototype.sshConfig);
+        Machine.prototype.sshCommand = util.promisify(Machine.prototype.sshCommand);
         Machine.prototype.status = util.promisify(Machine.prototype.status);
         Machine.prototype.up = util.promisify(Machine.prototype.up);
         Machine.prototype.init = util.promisify(Machine.prototype.init);
