@@ -65,6 +65,11 @@ machine.status(function(err, out) {});
 // out is an array of objects [{}] with properties: port, hostname, user, private_key
 machine.sshConfig(function(err, out) {});
 
+// execute an ssh command on the machine
+machine.on('ssh-out', console.log);
+machine.on('ssh-err', console.error);
+machine.sshCommand('echo "a bash command"');
+
 // provision
 machine.provision(function(err, out) {});
 
