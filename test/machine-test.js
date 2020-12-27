@@ -118,6 +118,41 @@ describe('it should test Machine class', function () {
             };
             machine.sshConfig();
         });
+        it('should test machine ssh command', function (done) {
+            machine._run = function (command) {
+                expect(command).to.be.an('array');
+                expect(command.length).to.equal(3);
+                expect(command[0]).to.equal('ssh');
+                done();
+            };
+            machine.sshCommand('echo test');
+        });
+        it('should test machine ssh command emit stdout', function (done) {
+            var ee = new EventEmitter;
+            var spy = sinon.spy();
+            machine._run = function (command) {
+                return { stdout: ee, stderr: new EventEmitter };
+            };
+            machine.once('ssh-out', spy);
+            machine.sshCommand('echo test');
+            ee.emit('data', 'test');
+            expect(spy.calledOnce).to.equal(true);
+            expect(spy.getCall(0).args[0]).to.equal('test');
+            done();
+        });
+        it('should test machine ssh command emit stderr', function (done) {
+            var ee = new EventEmitter;
+            var spy = sinon.spy();
+            machine._run = function (command) {
+                return { stdout: new EventEmitter, stderr: ee };
+            };
+            machine.once('ssh-err', spy);
+            machine.sshCommand('1>&2 echo test');
+            ee.emit('data', 'test');
+            expect(spy.calledOnce).to.equal(true);
+            expect(spy.getCall(0).args[0]).to.equal('test');
+            done();
+        });
         it('should test machine suspend', function (done) {
             machine._run = function (command) {
                 expect(command).to.be.an('array');
